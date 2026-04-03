@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1C1C1E">
+
+    <!-- Mode toggle + variable buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="4dp"
+        android:gravity="center_vertical">
+
+        <Button android:id="@+id/btn_mode_surface"
+            android:layout_width="wrap_content" android:layout_height="match_parent"
+            android:text="z=f(x,y)" android:textSize="10sp"
+            style="@style/KbButton.Func" />
+
+        <Button android:id="@+id/btn_mode_curve"
+            android:layout_width="wrap_content" android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:text="参数" android:textSize="10sp"
+            style="@style/KbButton.Func" />
+
+        <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+
+        <Button android:id="@+id/btn_var_x"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:text="x" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_marginHorizontal="1dp" />
+
+        <Button android:id="@+id/btn_var_y"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:text="y" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_marginHorizontal="1dp" />
+
+        <Button android:id="@+id/btn_var_t"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:text="t" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_marginHorizontal="1dp" />
+
+        <Button android:id="@+id/btn_reset_3d"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:text="⟲" android:textSize="12sp"
+            style="@style/KbButton.Ans" android:layout_marginStart="2dp" />
+    </LinearLayout>
+
+    <!-- Surface mode input -->
+    <LinearLayout
+        android:id="@+id/layout_surface"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="4dp"
+        android:paddingBottom="2dp">
+
+        <EditText android:id="@+id/et_function_3d"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:hint="sin(x)*cos(y)" android:textSize="12sp"
+            android:textColor="@android:color/white" android:textColorHint="#555"
+            android:background="@null" android:singleLine="true" />
+
+        <Button android:id="@+id/btn_plot_3d"
+            android:layout_width="wrap_content" android:layout_height="match_parent"
+            android:text="绘制" android:textSize="11sp"
+            style="@style/KbButton.Eq" android:layout_marginStart="3dp" />
+    </LinearLayout>
+
+    <!-- Parametric mode inputs (hidden by default) -->
+    <LinearLayout
+        android:id="@+id/layout_parametric"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="4dp"
+        android:paddingBottom="2dp"
+        android:visibility="gone">
+
+        <EditText android:id="@+id/et_px" android:hint="x(t)"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:textSize="11sp"
+            android:textColor="@android:color/white" android:textColorHint="#555"
+            android:background="@null" android:singleLine="true" />
+
+        <EditText android:id="@+id/et_py" android:hint="y(t)"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:textSize="11sp"
+            android:textColor="@android:color/white" android:textColorHint="#555"
+            android:background="@null" android:singleLine="true" />
+
+        <EditText android:id="@+id/et_pz" android:hint="z(t)"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:textSize="11sp"
+            android:textColor="@android:color/white" android:textColorHint="#555"
+            android:background="@null" android:singleLine="true" />
+    </LinearLayout>
+
+    <!-- T range (parametric mode) -->
+    <LinearLayout
+        android:id="@+id/layout_t_range"
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingHorizontal="6dp"
+        android:visibility="gone">
+
+        <TextView android:text="t:" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center" android:textSize="10sp" android:textColor="#888" />
+
+        <EditText android:id="@+id/et_t_min" android:text="0"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:gravity="center" android:textSize="10sp"
+            android:textColor="@android:color/white" android:background="@null"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <TextView android:text="~" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center" android:textSize="10sp" android:textColor="#555" />
+
+        <EditText android:id="@+id/et_t_max" android:text="6.283"
+            android:layout_width="36dp" android:layout_height="match_parent"
+            android:gravity="center" android:textSize="10sp"
+            android:textColor="@android:color/white" android:background="@null"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <TextView android:text="步" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center" android:textSize="10sp" android:textColor="#555" />
+
+        <EditText android:id="@+id/et_t_step" android:text="0.02"
+            android:layout_width="36dp" android:layout_height="match_parent"
+            android:gravity="center" android:textSize="10sp"
+            android:textColor="@android:color/white" android:background="@null"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_hint"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:text="@string/plot_3d_hint"
+        android:textSize="9sp"
+        android:textColor="#555"
+        android:paddingStart="6dp" />
+
+    <!-- OpenGL Surface -->
+    <android.opengl.GLSurfaceView
+        android:id="@+id/gl_surface"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Keyboard container -->
+    <FrameLayout
+        android:id="@+id/kb_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

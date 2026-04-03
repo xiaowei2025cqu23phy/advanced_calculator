@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/kb_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#1C1C1E">
+
+    <!-- Tab bar (ALWAYS visible) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="4dp"
+        android:paddingTop="2dp">
+
+        <Button android:id="@+id/kb_toggle"
+            android:layout_width="36dp" android:layout_height="match_parent"
+            android:text="▲" android:textSize="12sp"
+            android:background="@drawable/btn_kb_func"
+            android:textColor="@color/btn_func_text"
+            android:stateListAnimator="@null" android:textAllCaps="false"
+            android:gravity="center" android:padding="0dp" android:minHeight="0dp"
+            android:layout_marginEnd="4dp" />
+
+        <Button android:id="@+id/kb_tab_1" android:text="三角" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_tab_2" android:text="对数" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_tab_3" android:text="幂根" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_tab_4" android:text="符号" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_margin="2dp" />
+    </LinearLayout>
+
+    <!-- Function rows (collapsible) -->
+    <LinearLayout
+        android:id="@+id/kb_func_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp">
+            <Button android:id="@+id/kb_fn_1" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+            <Button android:id="@+id/kb_fn_2" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+            <Button android:id="@+id/kb_fn_3" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+            <Button android:id="@+id/kb_fn_4" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+            <Button android:id="@+id/kb_fn_5" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="4dp"
+            android:paddingBottom="2dp">
+            <Button android:id="@+id/kb_fn_6" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+            <Button android:id="@+id/kb_fn_7" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+            <Button android:id="@+id/kb_fn_8" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+            <Button android:id="@+id/kb_fn_9" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+            <Button android:id="@+id/kb_fn_10" style="@style/KbButton.Func" android:textSize="12sp" android:layout_margin="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- Number pad (4 rows, always visible) -->
+    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp"
+        android:orientation="horizontal" android:paddingHorizontal="3dp" android:paddingBottom="2dp">
+        <Button android:id="@+id/kb_7" android:text="7" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_8" android:text="8" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_9" android:text="9" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_div" android:text="÷" style="@style/KbButton.Op" android:textSize="22sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_backspace" android:text="⌫" style="@style/KbButton.Del" android:textSize="18sp" android:layout_margin="2dp" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp"
+        android:orientation="horizontal" android:paddingHorizontal="3dp" android:paddingBottom="2dp">
+        <Button android:id="@+id/kb_4" android:text="4" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_5" android:text="5" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_6" android:text="6" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_mul" android:text="×" style="@style/KbButton.Op" android:textSize="22sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_ac" android:text="AC" style="@style/KbButton.AC" android:textSize="14sp" android:layout_margin="2dp" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp"
+        android:orientation="horizontal" android:paddingHorizontal="3dp" android:paddingBottom="2dp">
+        <Button android:id="@+id/kb_1" android:text="1" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_2" android:text="2" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_3" android:text="3" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_sub" android:text="−" style="@style/KbButton.Op" android:textSize="22sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_equals" android:text="=" style="@style/KbButton.Eq" android:textSize="22sp" android:layout_margin="2dp" />
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="48dp"
+        android:orientation="horizontal" android:paddingHorizontal="3dp" android:paddingBottom="2dp">
+        <Button android:id="@+id/kb_0" android:text="0" style="@style/KbButton.Num" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_dot" android:text="." style="@style/KbButton.Num" android:textSize="22sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_lparen" android:text="(" style="@style/KbButton.Func" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_rparen" android:text=")" style="@style/KbButton.Func" android:textSize="20sp" android:layout_margin="2dp" />
+        <Button android:id="@+id/kb_add" android:text="+" style="@style/KbButton.Op" android:textSize="22sp" android:layout_margin="2dp" />
+    </LinearLayout>
+</LinearLayout>

@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1C1C1E">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="矩阵A (行用逗号,分隔)"
+                android:textColor="#AAA"
+                android:textSize="12sp" />
+
+            <EditText
+                android:id="@+id/et_matrix_a"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="1 2, 3 4"
+                android:inputType="textMultiLine"
+                android:textColor="@android:color/white"
+                android:textColorHint="#555"
+                android:background="@null"
+                android:textSize="14sp"
+                android:minLines="2" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="矩阵B (用于双矩阵运算)"
+                android:textColor="#AAA"
+                android:textSize="12sp"
+                android:layout_marginTop="8dp" />
+
+            <EditText
+                android:id="@+id/et_matrix_b"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="5 6, 7 8"
+                android:inputType="textMultiLine"
+                android:textColor="@android:color/white"
+                android:textColorHint="#555"
+                android:background="@null"
+                android:textSize="14sp"
+                android:minLines="2" />
+
+            <!-- Matrix separator buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+
+                <TextView android:text="分隔:" android:textSize="10sp" android:textColor="#888"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+                <Button android:id="@+id/btn_m_sep_comma" android:text=","
+                    style="@style/KbButton.Func" android:textSize="14sp" />
+                <Button android:id="@+id/btn_m_sep_space" android:text="空格"
+                    style="@style/KbButton.Func" android:textSize="10sp" />
+                <Button android:id="@+id/btn_m_sep_nl" android:text="换行"
+                    style="@style/KbButton.Func" android:textSize="10sp" />
+            </LinearLayout>
+
+            <!-- Single matrix ops -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="单矩阵运算"
+                android:textColor="#888"
+                android:textSize="11sp"
+                android:layout_marginTop="8dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/btn_determinant" android:text="Det"
+                    style="@style/KbButton.Func" android:textSize="11sp" />
+                <Button android:id="@+id/btn_inverse" android:text="Inv"
+                    style="@style/KbButton.Func" android:textSize="11sp" />
+                <Button android:id="@+id/btn_transpose" android:text="Trans"
+                    style="@style/KbButton.Func" android:textSize="11sp" />
+                <Button android:id="@+id/btn_trace" android:text="Trace"
+                    style="@style/KbButton.Func" android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- Binary matrix ops -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="双矩阵运算"
+                android:textColor="#888"
+                android:textSize="11sp"
+                android:layout_marginTop="6dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:orientation="horizontal">
+
+                <Button android:id="@+id/btn_add_matrix" android:text="A+B"
+                    style="@style/KbButton.Op" android:textSize="13sp" />
+                <Button android:id="@+id/btn_sub_matrix" android:text="A-B"
+                    style="@style/KbButton.Op" android:textSize="13sp" />
+                <Button android:id="@+id/btn_mul_matrix" android:text="A×B"
+                    style="@style/KbButton.Op" android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- Result -->
+            <TextView
+                android:id="@+id/tv_matrix_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="13sp"
+                android:textColor="#FF9F0A"
+                android:textIsSelectable="true"
+                android:fontFamily="monospace"
+                android:padding="8dp"
+                android:background="#2C2C2E" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Keyboard container (inflated programmatically) -->
+    <FrameLayout
+        android:id="@+id/kb_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

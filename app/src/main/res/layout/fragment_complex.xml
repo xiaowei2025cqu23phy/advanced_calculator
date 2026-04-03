@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#1C1C1E"
+    android:padding="8dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView android:text="复数运算" android:textColor="#AAA"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="12sp" android:layout_marginBottom="4dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#2C2C2E"
+                android:padding="8dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:orientation="horizontal">
+
+                    <EditText android:id="@+id/et_complex_a"
+                        android:layout_width="0dp" android:layout_height="match_parent"
+                        android:layout_weight="1" android:hint="a+bi (如 3+4i)"
+                        android:textSize="13sp" android:textColor="@android:color/white"
+                        android:textColorHint="#555" android:background="@null"
+                        android:singleLine="true" />
+
+                    <TextView android:text="  ⊕  "
+                        android:layout_width="wrap_content" android:layout_height="match_parent"
+                        android:gravity="center" android:textColor="#FF9F0A"
+                        android:textSize="14sp" />
+
+                    <EditText android:id="@+id/et_complex_b"
+                        android:layout_width="0dp" android:layout_height="match_parent"
+                        android:layout_weight="1" android:hint="c+di (如 1-2i)"
+                        android:textSize="13sp" android:textColor="@android:color/white"
+                        android:textColorHint="#555" android:background="@null"
+                        android:singleLine="true" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="34dp"
+                    android:orientation="horizontal"
+                    android:paddingTop="4dp">
+
+                    <Button android:id="@+id/btn_cadd" android:text="+"
+                        style="@style/KbButton.Op" android:textSize="15sp" />
+                    <Button android:id="@+id/btn_csub" android:text="−"
+                        style="@style/KbButton.Op" android:textSize="15sp" />
+                    <Button android:id="@+id/btn_cmul" android:text="×"
+                        style="@style/KbButton.Op" android:textSize="15sp" />
+                    <Button android:id="@+id/btn_cdiv" android:text="÷"
+                        style="@style/KbButton.Op" android:textSize="15sp" />
+                    <Button android:id="@+id/btn_crect" android:text="→极坐标"
+                        style="@style/KbButton.Func" android:textSize="10sp" />
+                    <Button android:id="@+id/btn_cpolar" android:text="→直角坐标"
+                        style="@style/KbButton.Func" android:textSize="10sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- Single complex input for conversion -->
+            <TextView android:text="单个复数转换" android:textColor="#AAA"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
+                android:textSize="12sp" android:layout_marginTop="8dp" android:layout_marginBottom="4dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="36dp"
+                android:orientation="horizontal"
+                android:background="#2C2C2E"
+                android:padding="4dp">
+
+                <EditText android:id="@+id/et_complex_single"
+                    android:layout_width="0dp" android:layout_height="match_parent"
+                    android:layout_weight="1" android:hint="a+bi 或 r∠θ"
+                    android:textSize="13sp" android:textColor="@android:color/white"
+                    android:textColorHint="#555" android:background="@null"
+                    android:singleLine="true" />
+
+                <Button android:id="@+id/btn_crect2" android:text="→极坐标"
+                    style="@style/KbButton.Func" android:textSize="9sp" />
+                <Button android:id="@+id/btn_cpolar2" android:text="→直角"
+                    style="@style/KbButton.Func" android:textSize="9sp" />
+                <Button android:id="@+id/btn_conj" android:text="conj"
+                    style="@style/KbButton.Func" android:textSize="9sp" />
+                <Button android:id="@+id/btn_arg" android:text="arg"
+                    style="@style/KbButton.Func" android:textSize="9sp" />
+            </LinearLayout>
+
+            <!-- Result -->
+            <TextView
+                android:id="@+id/tv_complex_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textSize="14sp"
+                android:textColor="#FF9F0A"
+                android:textIsSelectable="true"
+                android:fontFamily="monospace"
+                android:padding="10dp"
+                android:background="#2C2C2E"
+                android:minLines="2" />
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Keyboard container -->
+    <FrameLayout
+        android:id="@+id/kb_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

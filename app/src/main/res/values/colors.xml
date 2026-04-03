@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Material 3 seed colors -->
+    <color name="seed_primary">#0A84FF</color>
+    <color name="seed_secondary">#FF9F0A</color>
+    <color name="seed_tertiary">#5E5CE6</color>
+    <color name="seed_error">#FF453A</color>
+
+    <!-- Light scheme -->
+    <color name="primary_light">#0A84FF</color>
+    <color name="on_primary_light">#FFFFFF</color>
+    <color name="primary_container_light">#D3E3FF</color>
+    <color name="on_primary_container_light">#001B3E</color>
+
+    <color name="secondary_light">#FF9F0A</color>
+    <color name="on_secondary_light">#FFFFFF</color>
+    <color name="secondary_container_light">#FFDDB3</color>
+    <color name="on_secondary_container_light">#2E1500</color>
+
+    <color name="tertiary_light">#5E5CE6</color>
+    <color name="on_tertiary_light">#FFFFFF</color>
+
+    <color name="error_light">#FF453A</color>
+    <color name="on_error_light">#FFFFFF</color>
+
+    <color name="surface_light">#FAFAFA</color>
+    <color name="on_surface_light">#1C1C1E</color>
+    <color name="surface_variant_light">#E0E3E7</color>
+    <color name="on_surface_variant_light">#44474E</color>
+    <color name="outline_light">#74777F</color>
+
+    <!-- Dark scheme -->
+    <color name="primary_dark">#6CB4FF</color>
+    <color name="on_primary_dark">#002E62</color>
+    <color name="primary_container_dark">#00458E</color>
+    <color name="on_primary_container_dark">#D3E3FF</color>
+
+    <color name="secondary_dark">#FFB340</color>
+    <color name="on_secondary_dark">#4A2600</color>
+    <color name="secondary_container_dark">#6D3900</color>
+    <color name="on_secondary_container_dark">#FFDDB3</color>
+
+    <color name="tertiary_dark">#B0AFFF</color>
+    <color name="on_tertiary_dark">#1C1A6A</color>
+
+    <color name="error_dark">#FF6B60</color>
+    <color name="on_error_dark">#601410</color>
+
+    <color name="surface_dark">#1C1C1E</color>
+    <color name="on_surface_dark">#E3E2E6</color>
+    <color name="surface_variant_dark">#44474E</color>
+    <color name="on_surface_variant_dark">#C4C6CF</color>
+    <color name="outline_dark">#8E9099</color>
+
+    <!-- Calculator keyboard specific colors -->
+    <color name="kb_bg">#2C2C2E</color>
+    <color name="kb_display_bg">#1C1C1E</color>
+
+    <color name="btn_number">#505053</color>
+    <color name="btn_number_text">#FFFFFFFF</color>
+    <color name="btn_number_pressed">#636366</color>
+
+    <color name="btn_operator">#FF9F0A</color>
+    <color name="btn_operator_text">#FFFFFFFF</color>
+    <color name="btn_operator_pressed">#FFB340</color>
+
+    <color name="btn_func">#3A3A3C</color>
+    <color name="btn_func_text">#FFFFFFFF</color>
+    <color name="btn_func_pressed">#48484A</color>
+
+    <color name="btn_ac">#FF453A</color>
+    <color name="btn_ac_text">#FFFFFFFF</color>
+
+    <color name="btn_del">#FF9F0A</color>
+    <color name="btn_del_text">#FFFFFFFF</color>
+
+    <color name="btn_equals">#0A84FF</color>
+    <color name="btn_equals_text">#FFFFFFFF</color>
+
+    <color name="btn_ans">#5E5CE6</color>
+    <color name="btn_ans_text">#FFFFFFFF</color>
+</resources>
