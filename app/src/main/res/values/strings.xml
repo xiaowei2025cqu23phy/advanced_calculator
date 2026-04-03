@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">Advanced Calculator</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="title_scientific">Scientific</string>
+    <string name="title_matrix">Matrix</string>
+    <string name="title_graph_2d">2D Graph</string>
+    <string name="title_graph_3d">3D Graph</string>
+
+    <string name="calculate">Calculate</string>
+    <string name="clear">Clear</string>
+    <string name="expression_hint">Enter expression (e.g., sin(pi/2))</string>
+    <string name="matrix_input_label">Enter Matrix A (rows comma-separated, elements space-separated):</string>
+    <string name="matrix_hint">1 2, 3 4</string>
+    <string name="btn_determinant">Calculate Determinant</string>
+    <string name="determinant_result">Determinant: %1$.2f</string>
+    <string name="error_prefix">Error: %1$s</string>
+    <string name="plot">Plot</string>
+    <string name="plot_3d">Plot 3D</string>
+    <string name="function_2d_hint">f(x) = sin(x)</string>
+    <string name="function_3d_hint">f(x,y) = sin(x)*cos(y)</string>
+
+    <string name="matrix_det_result">Determinant: %1$s</string>
+    <string name="matrix_inv_result">Inverse:\n%1$s</string>
+    <string name="matrix_trans_result">Transpose:\n%1$s</string>
+    <string name="matrix_trace_result">Trace: %1$s</string>
+    <string name="btn_det_short">Det</string>
+    <string name="btn_inv_short">Inverse</string>
+    <string name="btn_trans_short">Transpose</string>
+    <string name="btn_trace_short">Trace</string>
+
+    <!-- Compatibility for old fragments -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet.</string>
+</resources>

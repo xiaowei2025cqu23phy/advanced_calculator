@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/ScientificFragment"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/title_scientific" />
+    <item
+        android:id="@+id/MatrixFragment"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:title="@string/title_matrix" />
+    <item
+        android:id="@+id/Graph2DFragment"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="@string/title_graph_2d" />
+    <item
+        android:id="@+id/Graph3DFragment"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="@string/title_graph_3d" />
+</menu>

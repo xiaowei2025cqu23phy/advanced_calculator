@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/ScientificFragment">
+
+    <fragment
+        android:id="@+id/ScientificFragment"
+        android:name="com.example.myapplication.ScientificFragment"
+        android:label="Scientific Calculator"
+        tools:layout="@layout/fragment_scientific">
+        <action
+            android:id="@+id/action_Scientific_to_Matrix"
+            app:destination="@id/MatrixFragment" />
+        <action
+            android:id="@+id/action_Scientific_to_Graph2D"
+            app:destination="@id/Graph2DFragment" />
+        <action
+            android:id="@+id/action_Scientific_to_Graph3D"
+            app:destination="@id/Graph3DFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/MatrixFragment"
+        android:name="com.example.myapplication.MatrixFragment"
+        android:label="Matrix Calculator"
+        tools:layout="@layout/fragment_matrix" />
+
+    <fragment
+        android:id="@+id/Graph2DFragment"
+        android:name="com.example.myapplication.Graph2DFragment"
+        android:label="2D Graphing"
+        tools:layout="@layout/fragment_graph_2d" />
+
+    <fragment
+        android:id="@+id/Graph3DFragment"
+        android:name="com.example.myapplication.Graph3DFragment"
+        android:label="3D Graphing"
+        tools:layout="@layout/fragment_graph_3d" />
+</navigation>

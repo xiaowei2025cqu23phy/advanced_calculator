@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">高级计算器</string>
+    <string name="action_settings">设置</string>
+
+    <string name="title_scientific">科学</string>
+    <string name="title_matrix">矩阵</string>
+    <string name="title_graph_2d">2D 图形</string>
+    <string name="title_graph_3d">3D 图形</string>
+
+    <string name="calculate">计算</string>
+    <string name="clear">清除</string>
+    <string name="expression_hint">输入表达式 (例如: sin(pi/2))</string>
+    <string name="matrix_input_label">输入矩阵 A (行以逗号分隔，元素以空格分隔):</string>
+    <string name="matrix_hint">1 2, 3 4</string>
+    <string name="btn_determinant">计算行列式</string>
+    <string name="determinant_result">行列式: %1$.2f</string>
+    <string name="error_prefix">错误: %1$s</string>
+    <string name="plot">绘制</string>
+    <string name="plot_3d">绘制 3D</string>
+    <string name="function_2d_hint">f(x) = sin(x)</string>
+    <string name="function_3d_hint">f(x,y) = sin(x)*cos(y)</string>
+
+    <string name="matrix_det_result">行列式: %1$s</string>
+    <string name="matrix_inv_result">逆矩阵:\n%1$s</string>
+    <string name="matrix_trans_result">转置矩阵:\n%1$s</string>
+    <string name="matrix_trace_result">迹: %1$s</string>
+    <string name="btn_det_short">行列式</string>
+    <string name="btn_inv_short">逆矩阵</string>
+    <string name="btn_trans_short">转置</string>
+    <string name="btn_trace_short">迹</string>
+</resources>
