@@ -18,8 +18,6 @@ public class Graph3DFragment extends Fragment {
     private FragmentGraph3dBinding binding;
     private Graph3DRenderer renderer;
     private GLSurfaceView glSurfaceView;
-
-    // Touch tracking
     private float prevX, prevY;
 
     @Override
@@ -39,30 +37,38 @@ public class Graph3DFragment extends Fragment {
 
         // Touch rotation
         glSurfaceView.setOnTouchListener((v, event) -> {
-            float x = event.getX();
-            float y = event.getY();
-
+            float x = event.getX(), y = event.getY();
             switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    prevX = x;
-                    prevY = y;
-                    return true;
+                case MotionEvent.ACTION_DOWN: prevX = x; prevY = y; return true;
                 case MotionEvent.ACTION_MOVE:
-                    float dx = x - prevX;
-                    float dy = y - prevY;
-                    float newRotY = renderer.getRotY() + dx * 0.5f;
-                    float newRotX = renderer.getRotX() + dy * 0.5f;
-                    newRotX = Math.max(-90f, Math.min(90f, newRotX));
-                    renderer.setRotation(newRotX, newRotY);
-                    prevX = x;
-                    prevY = y;
-                    return true;
+                    renderer.setRotation(
+                        Math.max(-90f, Math.min(90f, renderer.getRotX() + (y - prevY) * 0.5f)),
+                        renderer.getRotY() + (x - prevX) * 0.5f);
+                    prevX = x; prevY = y; return true;
             }
             return false;
         });
 
-        // Default function
-        binding.etFunction3d.setText("sin(x)*cos(y)");
+        // Math keyboard targets the function input
+        View kbView = view.findViewById(R.id.kb_root);
+        if (kbView != null) {
+            MathKeyboardHelper kb = new MathKeyboardHelper(kbView, text -> {
+                binding.etFunction3d.append(text);
+            });
+            kb.getBackspaceButton().setOnClickListener(v -> {
+                String t = binding.etFunction3d.getText().toString();
+                if (!t.isEmpty()) binding.etFunction3d.setText(t.substring(0, t.length() - 1));
+            });
+            kb.getAcButton().setOnClickListener(v -> binding.etFunction3d.setText(""));
+            kb.getEqualsButton().setOnClickListener(v -> plotFunction());
+        }
+
+        // Prevent system keyboard on the edit text
+        binding.etFunction3d.setShowSoftInputOnFocus(false);
+        binding.etFunction3d.setOnTouchListener((v, event) -> {
+            v.onTouchEvent(event);
+            return true;
+        });
 
         binding.btnPlot3d.setOnClickListener(v -> plotFunction());
     }
@@ -70,11 +76,10 @@ public class Graph3DFragment extends Fragment {
     private void plotFunction() {
         String expr = binding.etFunction3d.getText().toString().trim();
         if (expr.isEmpty()) {
-            Toast.makeText(getContext(), "请输入函数表达式", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), "请输入函数", Toast.LENGTH_SHORT).show();
             return;
         }
         glSurfaceView.queueEvent(() -> renderer.setFunction(expr));
-        Toast.makeText(getContext(), "绘制中: f(x,y) = " + expr, Toast.LENGTH_SHORT).show();
     }
 
     @Override

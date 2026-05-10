@@ -4,12 +4,12 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import com.example.myapplication.databinding.FragmentScientificBinding;
-import org.mariuszgromada.math.mxparser.*;
+
+import org.mariuszgromada.math.mxparser.Expression;
 
 public class ScientificFragment extends Fragment {
 
@@ -26,168 +26,81 @@ public class ScientificFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setupKeyboard();
-
-        binding.btnAc.setOnClickListener(v -> {
-            binding.etExpression.setText("");
-            binding.tvResult.setText("");
+        // Prevent system keyboard
+        binding.etExpression.setShowSoftInputOnFocus(false);
+        binding.etExpression.setOnTouchListener((v, event) -> {
+            v.onTouchEvent(event);
+            return true;
         });
 
-        binding.btnDel.setOnClickListener(v -> {
-            String text = binding.etExpression.getText().toString();
-            if (!text.isEmpty()) {
-                binding.etExpression.setText(text.substring(0, text.length() - 1));
-            }
-        });
+        // Compact math keyboard
+        View kbView = view.findViewById(R.id.kb_root);
+        if (kbView != null) {
+            MathKeyboardHelper kb = new MathKeyboardHelper(kbView, text -> {
+                binding.etExpression.append(text);
+            });
+            kb.getEqualsButton().setOnClickListener(v -> calculateResult());
+            kb.getAcButton().setOnClickListener(v -> {
+                binding.etExpression.setText("");
+                binding.tvResult.setText("");
+            });
+            kb.getBackspaceButton().setOnClickListener(v -> {
+                String t = binding.etExpression.getText().toString();
+                if (!t.isEmpty()) {
+                    binding.etExpression.setText(t.substring(0, t.length() - 1));
+                }
+            });
+        }
 
-        binding.btnEquals.setOnClickListener(v -> calculateResult());
-
+        // Toolbar buttons
         binding.btnDeg.setOnClickListener(v -> {
             degreeMode = !degreeMode;
             binding.btnDeg.setText(degreeMode ? "DEG" : "RAD");
         });
-    }
 
-    private void setupKeyboard() {
-        View.OnClickListener digitListener = v -> {
-            Button b = (Button) v;
-            binding.etExpression.append(b.getText());
-        };
-
-        View.OnClickListener funcListener = v -> {
-            Button b = (Button) v;
-            binding.etExpression.append(b.getText() + "(");
-        };
-
-        View.OnClickListener constantListener = v -> {
-            Button b = (Button) v;
-            String constText = b.getText().toString();
-            switch (constText) {
-                case "π":
-                    binding.etExpression.append("pi");
-                    break;
-                case "e":
-                    binding.etExpression.append("e");
-                    break;
-                case "i":
-                    binding.etExpression.append("i");
-                    break;
-            }
-        };
-
-        View.OnClickListener specialFuncListener = v -> {
-            Button b = (Button) v;
-            String func = b.getText().toString();
-            switch (func) {
-                case "√":
-                    binding.etExpression.append("sqrt(");
-                    break;
-                case "x^y":
-                    binding.etExpression.append("^");
-                    break;
-                case "|x|":
-                    binding.etExpression.append("abs(");
-                    break;
-                case "n!":
-                    binding.etExpression.append("!");
-                    break;
-                case "1/x":
-                    binding.etExpression.append("1/");
-                    break;
-                case "%":
-                    binding.etExpression.append("%");
-                    break;
-            }
-        };
-
-        binding.btnSin.setOnClickListener(funcListener);
-        binding.btnCos.setOnClickListener(funcListener);
-        binding.btnTan.setOnClickListener(funcListener);
-        binding.btnAsin.setOnClickListener(funcListener);
-        binding.btnAcos.setOnClickListener(funcListener);
-        binding.btnAtan.setOnClickListener(funcListener);
-        binding.btnLog.setOnClickListener(funcListener);
-        binding.btnLn.setOnClickListener(funcListener);
-
-        binding.btnPi.setOnClickListener(constantListener);
-        binding.btnExp.setOnClickListener(constantListener);
-        binding.btnComplexI.setOnClickListener(constantListener);
-
-        binding.btnSqrt.setOnClickListener(specialFuncListener);
-        binding.btnPow.setOnClickListener(specialFuncListener);
-        binding.btnAbs.setOnClickListener(specialFuncListener);
-        binding.btnFact.setOnClickListener(specialFuncListener);
-        binding.btnFrac.setOnClickListener(specialFuncListener);
-        binding.btnMod.setOnClickListener(specialFuncListener);
-
-        binding.btnConst.setOnClickListener(v -> {
+        binding.btnAns.setOnClickListener(v -> {
             if (!lastResult.isEmpty()) {
                 binding.etExpression.append(lastResult);
             }
         });
 
-        binding.btnNeg.setOnClickListener(v -> {
-            binding.etExpression.append("-");
-        });
-
-        binding.btn0.setOnClickListener(digitListener);
-        binding.btn1.setOnClickListener(digitListener);
-        binding.btn2.setOnClickListener(digitListener);
-        binding.btn3.setOnClickListener(digitListener);
-        binding.btn4.setOnClickListener(digitListener);
-        binding.btn5.setOnClickListener(digitListener);
-        binding.btn6.setOnClickListener(digitListener);
-        binding.btn7.setOnClickListener(digitListener);
-        binding.btn8.setOnClickListener(digitListener);
-        binding.btn9.setOnClickListener(digitListener);
-        binding.btnDot.setOnClickListener(digitListener);
-
-        binding.btnLeftParen.setOnClickListener(digitListener);
-        binding.btnRightParen.setOnClickListener(digitListener);
-        binding.btnAdd.setOnClickListener(digitListener);
-        binding.btnSub.setOnClickListener(digitListener);
-        binding.btnMul.setOnClickListener(digitListener);
-        binding.btnDiv.setOnClickListener(digitListener);
+        binding.btnComplexI.setOnClickListener(v -> binding.etExpression.append("i"));
+        binding.btnPi.setOnClickListener(v -> binding.etExpression.append("pi"));
+        binding.btnE.setOnClickListener(v -> binding.etExpression.append("e"));
     }
 
     private void calculateResult() {
-        String exprString = binding.etExpression.getText().toString();
-        if (exprString.isEmpty()) return;
+        String expr = binding.etExpression.getText().toString();
+        if (expr.isEmpty()) return;
 
-        // Replace display operators with mXparser operators
-        exprString = exprString.replace("×", "*");
-        exprString = exprString.replace("÷", "/");
-        exprString = exprString.replace("−", "-");
+        expr = expr.replace("×", "*").replace("÷", "/").replace("−", "-");
 
-        // Handle degree/radian mode using regex with word boundaries.
-        // This avoids corrupting nested trig (e.g. asin(sin(30))):
-        //   \b ensures "sin(" won't match inside "asin(".
         if (degreeMode) {
-            exprString = exprString.replaceAll("\\bsin\\(", "sin(pi/180*");
-            exprString = exprString.replaceAll("\\bcos\\(", "cos(pi/180*");
-            exprString = exprString.replaceAll("\\btan\\(", "tan(pi/180*");
-            exprString = exprString.replaceAll("\\basin\\(", "180/pi*asin(");
-            exprString = exprString.replaceAll("\\bacos\\(", "180/pi*acos(");
-            exprString = exprString.replaceAll("\\batan\\(", "180/pi*atan(");
+            expr = expr.replaceAll("\\bsin\\(", "sin(pi/180*");
+            expr = expr.replaceAll("\\bcos\\(", "cos(pi/180*");
+            expr = expr.replaceAll("\\btan\\(", "tan(pi/180*");
+            expr = expr.replaceAll("\\basin\\(", "180/pi*asin(");
+            expr = expr.replaceAll("\\bacos\\(", "180/pi*acos(");
+            expr = expr.replaceAll("\\batan\\(", "180/pi*atan(");
         }
 
         try {
-            Expression e = new Expression(exprString);
+            Expression e = new Expression(expr);
             double result = e.calculate();
 
             if (Double.isNaN(result)) {
-                binding.tvResult.setText(getString(R.string.error_prefix, "Invalid expression"));
+                binding.tvResult.setText(getString(R.string.error_prefix, "表达式无效"));
             } else if (Double.isInfinite(result)) {
-                binding.tvResult.setText(getString(R.string.error_prefix, "Infinity"));
+                binding.tvResult.setText(getString(R.string.error_prefix, "结果为无穷大"));
             } else {
-                String resultStr;
+                String s;
                 if (result == Math.floor(result) && !Double.isInfinite(result)) {
-                    resultStr = String.valueOf((long) result);
+                    s = String.valueOf((long) result);
                 } else {
-                    resultStr = String.valueOf(result);
+                    s = String.valueOf(result);
                 }
-                binding.tvResult.setText("= " + resultStr);
-                lastResult = resultStr;
+                binding.tvResult.setText("= " + s);
+                lastResult = s;
             }
         } catch (Exception ex) {
             binding.tvResult.setText(getString(R.string.error_prefix, ex.getMessage()));

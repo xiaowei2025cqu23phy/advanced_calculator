@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git *)",
+      "Bash(./gradlew assembleDebug)",
+      "Bash(JAVA_HOME=\"C:/Program Files/Eclipse Adoptium/jdk-22\" ./gradlew assembleDebug)",
+      "Read(//c/Program Files/**)",
+      "Read(//c/Program Files/Common Files/Oracle/Java/**)",
+      "Bash(java -version)",
+      "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-22\" ./gradlew assembleDebug)",
+      "WebSearch",
+      "WebFetch(domain:mathparser.org)"
+    ]
+  }
+}

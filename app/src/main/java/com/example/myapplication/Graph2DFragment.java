@@ -30,6 +30,8 @@ import java.util.List;
 public class Graph2DFragment extends Fragment {
 
     private FragmentGraph2dBinding binding;
+    private boolean parametricMode = false;
+    private EditText focusedInput;
 
     private static final int[] COLORS = {
         0xFF2196F3, 0xFFF44336, 0xFF4CAF50, 0xFFFF9800,
@@ -47,165 +49,228 @@ public class Graph2DFragment extends Fragment {
 
         setupChart();
 
+        // Keyboard (use findViewById for reliability with included layouts)
+        View kbView = view.findViewById(R.id.kb_root);
+        MathKeyboardHelper kb = null;
+        if (kbView != null) {
+            kb = new MathKeyboardHelper(kbView, text -> {
+                if (focusedInput != null) focusedInput.append(text);
+            });
+            final MathKeyboardHelper kbRef = kb;
+            kb.getEqualsButton().setOnClickListener(v -> plotAllGraphs());
+            kb.getBackspaceButton().setOnClickListener(v -> {
+                if (focusedInput != null) {
+                    String t = focusedInput.getText().toString();
+                    if (!t.isEmpty()) focusedInput.setText(t.substring(0, t.length() - 1));
+                }
+            });
+            kb.getAcButton().setOnClickListener(v -> {
+                if (focusedInput != null) focusedInput.setText("");
+            });
+        }
+
         binding.btnAddFunction.setOnClickListener(v -> addFunctionInput());
         binding.btnPlot2d.setOnClickListener(v -> plotAllGraphs());
         binding.btnClearAll.setOnClickListener(v -> clearAllFunctions());
 
+        // Mode toggle
+        binding.btnModeNormal.setOnClickListener(v -> setMode(false));
+        binding.btnModeParam.setOnClickListener(v -> setMode(true));
+
+        updateModeButtons();
         addFunctionInput();
     }
 
+    private void setMode(boolean param) {
+        if (parametricMode == param) return;
+        parametricMode = param;
+        updateModeButtons();
+        binding.layoutTRange.setVisibility(param ? View.VISIBLE : View.GONE);
+        clearAllFunctions();
+    }
+
+    private void updateModeButtons() {
+        binding.btnModeNormal.setAlpha(parametricMode ? 0.4f : 1f);
+        binding.btnModeParam.setAlpha(parametricMode ? 1f : 0.4f);
+    }
+
     private void setupChart() {
-        LineChart chart = binding.chart2d;
-
-        chart.getDescription().setEnabled(false);
-        chart.setTouchEnabled(true);
-        chart.setDragEnabled(true);
-        chart.setScaleEnabled(true);
-        chart.setPinchZoom(true);
-        chart.setDrawGridBackground(false);
-        chart.setExtraOffsets(8, 8, 8, 8);
-
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
-        xAxis.setDrawGridLines(true);
-        xAxis.setGranularity(1f);
-        xAxis.setGranularityEnabled(true);
-
-        YAxis leftAxis = chart.getAxisLeft();
-        leftAxis.setDrawGridLines(true);
-        leftAxis.setGranularity(1f);
-        leftAxis.setGranularityEnabled(true);
-
-        YAxis rightAxis = chart.getAxisRight();
-        rightAxis.setEnabled(false);
-
-        chart.getLegend().setEnabled(true);
+        binding.chart2d.getDescription().setEnabled(false);
+        binding.chart2d.setTouchEnabled(true);
+        binding.chart2d.setDragEnabled(true);
+        binding.chart2d.setScaleEnabled(true);
+        binding.chart2d.setPinchZoom(true);
+        binding.chart2d.setDrawGridBackground(false);
+        binding.chart2d.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        binding.chart2d.getAxisRight().setEnabled(false);
     }
 
     private void addFunctionInput() {
         LinearLayout container = binding.functionsContainer;
+        LinearLayout row = new LinearLayout(getContext());
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
+        row.setPadding(0, 2, 0, 2);
 
-        LinearLayout functionLayout = new LinearLayout(getContext());
-        functionLayout.setOrientation(LinearLayout.HORIZONTAL);
-        functionLayout.setLayoutParams(new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
+        if (parametricMode) {
+            EditText xt = makeEditText("x(t)");
+            EditText yt = makeEditText("y(t)");
+            Button del = makeDeleteButton(row);
+            row.addView(xt); row.addView(yt); row.addView(del);
+        } else {
+            EditText et = makeEditText("f(x)");
+            Button del = makeDeleteButton(row);
+            row.addView(et); row.addView(del);
+        }
+        container.addView(row);
+    }
 
-        EditText editText = new EditText(getContext());
-        editText.setLayoutParams(new LinearLayout.LayoutParams(
-            0, LinearLayout.LayoutParams.WRAP_CONTENT, 1
-        ));
-        editText.setHint("f(x) = x^2");
-        editText.setId(View.generateViewId());
+    private EditText makeEditText(String hint) {
+        EditText et = new EditText(getContext());
+        et.setLayoutParams(new LinearLayout.LayoutParams(0, -2, 1));
+        et.setHint(hint);
+        et.setTextSize(13f);
+        et.setTextColor(0xFFFFFFFF);
+        et.setHintTextColor(0x88FFFFFF);
+        et.setBackground(null);
+        et.setSingleLine(true);
+        et.setId(View.generateViewId());
+        et.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) focusedInput = (EditText) v;
+        });
+        return et;
+    }
 
-        Button removeBtn = new Button(getContext());
-        removeBtn.setLayoutParams(new LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        ));
-        removeBtn.setText("删除");
-        removeBtn.setOnClickListener(v -> container.removeView(functionLayout));
-
-        functionLayout.addView(editText);
-        functionLayout.addView(removeBtn);
-        container.addView(functionLayout);
+    private Button makeDeleteButton(ViewGroup row) {
+        Button b = new Button(getContext());
+        b.setLayoutParams(new LinearLayout.LayoutParams(-2, -2));
+        b.setText("×");
+        b.setTextColor(0xFFFF453A);
+        b.setBackground(null);
+        b.setOnClickListener(v -> ((ViewGroup) row.getParent()).removeView(row));
+        return b;
     }
 
     private void plotAllGraphs() {
-        // Parse range inputs
+        if (parametricMode) plotParametric();
+        else plotNormal();
+    }
+
+    private void plotNormal() {
         float xMin, xMax, step;
         try {
             xMin = Float.parseFloat(binding.etXMin.getText().toString());
             xMax = Float.parseFloat(binding.etXMax.getText().toString());
             step = Float.parseFloat(binding.etStep.getText().toString());
         } catch (NumberFormatException e) {
-            Toast.makeText(getContext(), "请输入有效的数字范围", Toast.LENGTH_SHORT).show();
-            return;
+            Toast.makeText(getContext(), "范围无效", Toast.LENGTH_SHORT).show(); return;
         }
+        if (xMin >= xMax || step <= 0) { Toast.makeText(getContext(), "范围设置不正确", Toast.LENGTH_SHORT).show(); return; }
 
-        if (xMin >= xMax) {
-            Toast.makeText(getContext(), "X最小值必须小于最大值", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (step <= 0) {
-            Toast.makeText(getContext(), "步长必须大于0", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Collect functions
-        List<String> functions = new ArrayList<>();
-        LinearLayout container = binding.functionsContainer;
-
-        for (int i = 0; i < container.getChildCount(); i++) {
-            View child = container.getChildAt(i);
-            if (child instanceof LinearLayout) {
-                EditText editText = (EditText) ((LinearLayout) child).getChildAt(0);
-                String func = editText.getText().toString().trim();
-                if (!func.isEmpty()) {
-                    String cleaned = func.replaceAll("(?i)^f\\d*\\(x\\)\\s*=\\s*", "");
-                    functions.add(cleaned);
-                }
+        List<String> funcs = new ArrayList<>();
+        for (int i = 0; i < binding.functionsContainer.getChildCount(); i++) {
+            View c = binding.functionsContainer.getChildAt(i);
+            if (c instanceof LinearLayout) {
+                String txt = ((EditText) ((LinearLayout) c).getChildAt(0)).getText().toString().trim();
+                if (!txt.isEmpty()) funcs.add(txt);
             }
         }
+        if (funcs.isEmpty()) { Toast.makeText(getContext(), "请添加函数", Toast.LENGTH_SHORT).show(); return; }
 
-        if (functions.isEmpty()) {
-            Toast.makeText(getContext(), "请输入至少一个函数", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // Generate data for each function
-        List<ILineDataSet> dataSets = new ArrayList<>();
-        int colorIdx = 0;
-
-        for (String func : functions) {
-            List<Entry> entries = generateFunctionData(func, xMin, xMax, step);
+        List<ILineDataSet> sets = new ArrayList<>();
+        int ci = 0;
+        for (String f : funcs) {
+            List<Entry> entries = generate(f, xMin, xMax, step);
             if (!entries.isEmpty()) {
-                LineDataSet ds = new LineDataSet(entries, "f" + (colorIdx + 1) + "(x)");
-                ds.setColor(COLORS[colorIdx % COLORS.length]);
-                ds.setLineWidth(2f);
-                ds.setCircleRadius(0f);
-                ds.setDrawValues(false);
-                ds.setDrawCircles(false);
-                ds.setMode(LineDataSet.Mode.LINEAR);
-                dataSets.add(ds);
-                colorIdx++;
+                LineDataSet ds = new LineDataSet(entries, "f" + (ci+1));
+                ds.setColor(COLORS[ci % COLORS.length]); ds.setLineWidth(2f);
+                ds.setCircleRadius(0f); ds.setDrawValues(false); ds.setDrawCircles(false);
+                sets.add(ds); ci++;
             }
         }
+        if (sets.isEmpty()) { Toast.makeText(getContext(), "无法绘制", Toast.LENGTH_SHORT).show(); return; }
 
-        if (dataSets.isEmpty()) {
-            Toast.makeText(getContext(), "无法绘制函数图形，请检查表达式", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        LineChart chart = binding.chart2d;
-
-        // Configure axis to match range
-        XAxis xAxis = chart.getXAxis();
-        xAxis.setAxisMinimum(xMin);
-        xAxis.setAxisMaximum(xMax);
-
-        // Auto-scale Y axis to data
-        chart.getAxisLeft().resetAxisMinimum();
-        chart.getAxisLeft().resetAxisMaximum();
-
-        chart.setData(new LineData(dataSets));
-        chart.invalidate();
+        binding.chart2d.getXAxis().setAxisMinimum(xMin);
+        binding.chart2d.getXAxis().setAxisMaximum(xMax);
+        binding.chart2d.getAxisLeft().resetAxisMinimum();
+        binding.chart2d.getAxisLeft().resetAxisMaximum();
+        binding.chart2d.setData(new LineData(sets));
+        binding.chart2d.invalidate();
     }
 
-    private List<Entry> generateFunctionData(String expression, float xMin, float xMax, float step) {
+    private List<Entry> generate(String expr, float min, float max, float step) {
         List<Entry> entries = new ArrayList<>();
         try {
             Argument x = new Argument("x");
-            Expression e = new Expression(expression, x);
+            Expression e = new Expression(expr, x);
             if (!e.checkSyntax()) return entries;
-
-            for (double val = xMin; val <= xMax + step * 0.5; val += step) {
-                x.setArgumentValue(val);
+            for (double v = min; v <= max + step*0.5; v += step) {
+                x.setArgumentValue(v);
                 double y = e.calculate();
-                if (!Double.isNaN(y) && !Double.isInfinite(y)) {
-                    entries.add(new Entry((float) val, (float) y));
+                if (!Double.isNaN(y) && !Double.isInfinite(y))
+                    entries.add(new Entry((float)v, (float)y));
+            }
+        } catch (Exception ignored) {}
+        return entries;
+    }
+
+    private void plotParametric() {
+        float tMin, tMax, tStep;
+        try {
+            tMin = Float.parseFloat(binding.etTMin.getText().toString());
+            tMax = Float.parseFloat(binding.etTMax.getText().toString());
+            tStep = Float.parseFloat(binding.etTStep.getText().toString());
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "t范围无效", Toast.LENGTH_SHORT).show(); return;
+        }
+        if (tMin >= tMax || tStep <= 0) { Toast.makeText(getContext(), "范围不正确", Toast.LENGTH_SHORT).show(); return; }
+
+        List<String[]> funcs = new ArrayList<>();
+        for (int i = 0; i < binding.functionsContainer.getChildCount(); i++) {
+            View c = binding.functionsContainer.getChildAt(i);
+            if (c instanceof LinearLayout) {
+                LinearLayout row = (LinearLayout) c;
+                if (row.getChildCount() >= 3) {
+                    String xs = ((EditText) row.getChildAt(0)).getText().toString().trim();
+                    String ys = ((EditText) row.getChildAt(1)).getText().toString().trim();
+                    if (!xs.isEmpty() && !ys.isEmpty()) funcs.add(new String[]{xs, ys});
                 }
+            }
+        }
+        if (funcs.isEmpty()) { Toast.makeText(getContext(), "请添加参数方程", Toast.LENGTH_SHORT).show(); return; }
+
+        List<ILineDataSet> sets = new ArrayList<>();
+        int ci = 0;
+        for (String[] p : funcs) {
+            List<Entry> entries = generateParam(p[0], p[1], tMin, tMax, tStep);
+            if (!entries.isEmpty()) {
+                LineDataSet ds = new LineDataSet(entries, "C" + (ci+1));
+                ds.setColor(COLORS[ci % COLORS.length]); ds.setLineWidth(2f);
+                ds.setCircleRadius(0f); ds.setDrawValues(false); ds.setDrawCircles(false);
+                sets.add(ds); ci++;
+            }
+        }
+        if (sets.isEmpty()) { Toast.makeText(getContext(), "无法绘制", Toast.LENGTH_SHORT).show(); return; }
+
+        binding.chart2d.getXAxis().resetAxisMinimum();
+        binding.chart2d.getXAxis().resetAxisMaximum();
+        binding.chart2d.getAxisLeft().resetAxisMinimum();
+        binding.chart2d.getAxisLeft().resetAxisMaximum();
+        binding.chart2d.setData(new LineData(sets));
+        binding.chart2d.invalidate();
+    }
+
+    private List<Entry> generateParam(String xs, String ys, float tMin, float tMax, float tStep) {
+        List<Entry> entries = new ArrayList<>();
+        try {
+            Argument t = new Argument("t");
+            Expression ex = new Expression(xs, t);
+            Expression ey = new Expression(ys, t);
+            for (double v = tMin; v <= tMax + tStep*0.5; v += tStep) {
+                t.setArgumentValue(v);
+                double x = ex.calculate(), y = ey.calculate();
+                if (!Double.isNaN(x) && !Double.isInfinite(x) && !Double.isNaN(y) && !Double.isInfinite(y))
+                    entries.add(new Entry((float)x, (float)y));
             }
         } catch (Exception ignored) {}
         return entries;
@@ -213,8 +278,7 @@ public class Graph2DFragment extends Fragment {
 
     private void clearAllFunctions() {
         binding.functionsContainer.removeAllViews();
-        binding.chart2d.clear();
-        binding.chart2d.invalidate();
+        binding.chart2d.clear(); binding.chart2d.invalidate();
         addFunctionInput();
     }
 

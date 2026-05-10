@@ -1,99 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="4dp">
+    android:background="#1C1C1E">
 
-    <!-- Display and result -->
+    <!-- Expression display -->
     <EditText
         android:id="@+id/et_expression"
         android:layout_width="match_parent"
-        android:layout_height="42dp"
+        android:layout_height="44dp"
         android:gravity="center_vertical|end"
         android:hint="@string/expression_hint"
         android:inputType="none"
         android:textAlignment="viewEnd"
         android:textSize="20sp"
-        android:paddingHorizontal="8dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="#555555"
+        android:paddingHorizontal="12dp"
         android:background="@null"
         android:singleLine="true" />
 
+    <!-- Result -->
     <TextView
         android:id="@+id/tv_result"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
+        android:layout_height="26dp"
         android:gravity="end|center_vertical"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:textSize="16sp"
-        android:textColor="?attr/colorPrimaryDark"
+        android:paddingEnd="12dp"
+        android:textSize="15sp"
+        android:textColor="#FF9F0A"
         android:textStyle="bold" />
 
-    <!-- Scientific Calculator Keyboard -->
-    <GridLayout
+    <!-- Toolbar: DEG / Ans / i / π / e -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:columnCount="5"
-        android:rowCount="8">
+        android:layout_height="36dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="6dp"
+        android:paddingBottom="2dp"
+        android:background="#2C2C2E">
 
-        <!-- Row 1 -->
-        <Button android:id="@+id/btn_deg" android:text="DEG" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_sin" android:text="sin" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_cos" android:text="cos" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_tan" android:text="tan" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_ac" android:text="AC" style="@style/CalcButtonSpecial" app:cornerRadius="8dp" />
+        <Button
+            android:id="@+id/btn_deg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="DEG"
+            android:textSize="11sp"
+            style="@style/KbButton.Func" />
 
-        <!-- Row 2 -->
-        <Button android:id="@+id/btn_pi" android:text="π" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_log" android:text="log" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_ln" android:text="ln" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_sqrt" android:text="√" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_pow" android:text="x^y" style="@style/CalcButton" app:cornerRadius="8dp" />
+        <Button
+            android:id="@+id/btn_ans"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Ans"
+            android:textSize="11sp"
+            style="@style/KbButton.Ans" />
 
-        <!-- Row 3 -->
-        <Button android:id="@+id/btn_exp" android:text="e" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_abs" android:text="|x|" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_left_paren" android:text="(" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_right_paren" android:text=")" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_del" android:text="DEL" style="@style/CalcButtonSpecial" app:cornerRadius="8dp" />
+        <Button
+            android:id="@+id/btn_complex_i"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="i"
+            android:textSize="14sp"
+            style="@style/KbButton.Func" />
 
-        <!-- Row 4 -->
-        <Button android:id="@+id/btn_7" android:text="7" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_8" android:text="8" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_9" android:text="9" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_div" android:text="÷" style="@style/CalcButtonOperator" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_mod" android:text="%" style="@style/CalcButtonOperator" app:cornerRadius="8dp" />
+        <Button
+            android:id="@+id/btn_pi"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="π"
+            android:textSize="14sp"
+            style="@style/KbButton.Func" />
 
-        <!-- Row 5 -->
-        <Button android:id="@+id/btn_4" android:text="4" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_5" android:text="5" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_6" android:text="6" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_mul" android:text="×" style="@style/CalcButtonOperator" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_frac" android:text="1/x" style="@style/CalcButtonOperator" app:cornerRadius="8dp" />
+        <Button
+            android:id="@+id/btn_e"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="e"
+            android:textSize="14sp"
+            style="@style/KbButton.Func" />
 
-        <!-- Row 6 -->
-        <Button android:id="@+id/btn_1" android:text="1" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_2" android:text="2" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_3" android:text="3" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_sub" android:text="−" style="@style/CalcButtonOperator" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_fact" android:text="n!" style="@style/CalcButtonOperator" app:cornerRadius="8dp" />
+    </LinearLayout>
 
-        <!-- Row 7 -->
-        <Button android:id="@+id/btn_0" android:text="0" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_dot" android:text="." style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_neg" android:text="+/-" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_add" android:text="+" style="@style/CalcButtonOperator" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_equals" android:text="=" style="@style/CalcButtonEquals" app:cornerRadius="8dp" />
+    <!-- Compact math keyboard -->
+    <include layout="@layout/layout_math_keyboard" android:id="@+id/kb_root" />
 
-        <!-- Row 8 -->
-        <Button android:id="@+id/btn_complex_i" android:text="i" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_asin" android:text="asin" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_acos" android:text="acos" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_atan" android:text="atan" style="@style/CalcButton" app:cornerRadius="8dp" />
-        <Button android:id="@+id/btn_const" android:text="@string/const_btn" style="@style/CalcButton" app:cornerRadius="8dp" />
-
-    </GridLayout>
 </LinearLayout>

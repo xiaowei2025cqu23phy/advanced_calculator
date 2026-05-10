@@ -3,44 +3,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:background="#1C1C1E">
 
+    <!-- Input row -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal"
-        android:paddingBottom="8dp">
+        android:padding="4dp">
 
         <EditText
             android:id="@+id/et_function_3d"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:hint="f(x,y) = sin(x)*cos(y)"
-            android:inputType="textNoSuggestions"
-            android:padding="8dp"
-            android:textSize="16sp" />
+            android:textSize="13sp"
+            android:textColor="@android:color/white"
+            android:textColorHint="#555"
+            android:background="@null"
+            android:singleLine="true" />
 
         <Button
             android:id="@+id/btn_plot_3d"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/plot_3d"
-            android:layout_marginStart="8dp" />
-
+            android:layout_height="match_parent"
+            android:text="绘制"
+            android:textSize="12sp"
+            style="@style/KbButton.Eq"
+            android:layout_marginStart="4dp" />
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="18dp"
         android:text="@string/plot_3d_hint"
-        android:textSize="12sp"
-        android:paddingBottom="4dp" />
+        android:textSize="10sp"
+        android:textColor="#555"
+        android:paddingStart="6dp" />
 
+    <!-- OpenGL Surface -->
     <android.opengl.GLSurfaceView
         android:id="@+id/gl_surface"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />
+
+    <!-- Math keyboard -->
+    <include layout="@layout/layout_math_keyboard" android:id="@+id/kb_root" />
 
 </LinearLayout>

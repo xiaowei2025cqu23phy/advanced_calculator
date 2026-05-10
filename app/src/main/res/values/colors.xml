@@ -12,11 +12,33 @@
     <color name="secondary">#FF6D00</color>
     <color name="secondary_dark">#E65100</color>
 
-    <!-- Calculator button colors -->
-    <color name="btn_number">#F5F5F5</color>
-    <color name="btn_operator">#FFE0B2</color>
-    <color name="btn_special">#E0E0E0</color>
-    <color name="btn_equals">#1A73E8</color>
+    <!-- Calculator keyboard colors -->
+    <color name="kb_bg">#2C2C2E</color>
+    <color name="kb_display_bg">#1C1C1E</color>
+
+    <color name="btn_number">#505053</color>
+    <color name="btn_number_text">#FFFFFFFF</color>
+    <color name="btn_number_pressed">#636366</color>
+
+    <color name="btn_operator">#FF9F0A</color>
+    <color name="btn_operator_text">#FFFFFFFF</color>
+    <color name="btn_operator_pressed">#FFB340</color>
+
+    <color name="btn_func">#3A3A3C</color>
+    <color name="btn_func_text">#FFFFFFFF</color>
+    <color name="btn_func_pressed">#48484A</color>
+
+    <color name="btn_ac">#FF453A</color>
+    <color name="btn_ac_text">#FFFFFFFF</color>
+
+    <color name="btn_del">#FF9F0A</color>
+    <color name="btn_del_text">#FFFFFFFF</color>
+
+    <color name="btn_equals">#0A84FF</color>
+    <color name="btn_equals_text">#FFFFFFFF</color>
+
+    <color name="btn_ans">#5E5CE6</color>
+    <color name="btn_ans_text">#FFFFFFFF</color>
 
     <!-- Background -->
     <color name="bg_dark">#1E1E1E</color>

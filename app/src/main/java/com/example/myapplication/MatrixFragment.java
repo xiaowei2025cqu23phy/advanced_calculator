@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,6 +17,7 @@ import org.ejml.simple.SimpleMatrix;
 public class MatrixFragment extends Fragment {
 
     private FragmentMatrixBinding binding;
+    private EditText focusedInput;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -26,107 +28,91 @@ public class MatrixFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.btnDeterminant.setOnClickListener(v -> calculate(Op.DET));
-        binding.btnInverse.setOnClickListener(v -> calculate(Op.INV));
-        binding.btnTranspose.setOnClickListener(v -> calculate(Op.TRANS));
-        binding.btnTrace.setOnClickListener(v -> calculate(Op.TRACE));
-        binding.btnAddMatrix.setOnClickListener(v -> calculate(Op.ADD));
-        binding.btnSubMatrix.setOnClickListener(v -> calculate(Op.SUB));
-        binding.btnMulMatrix.setOnClickListener(v -> calculate(Op.MUL));
-    }
+        // Track focus
+        binding.etMatrixA.setOnFocusChangeListener((v, hasFocus) -> { if (hasFocus) focusedInput = binding.etMatrixA; });
+        binding.etMatrixB.setOnFocusChangeListener((v, hasFocus) -> { if (hasFocus) focusedInput = binding.etMatrixB; });
 
-    enum Op { DET, INV, TRANS, TRACE, ADD, SUB, MUL }
-
-    private void calculate(Op op) {
-        String inputA = binding.etMatrixA.getText().toString().trim();
-        if (inputA.isEmpty()) {
-            Toast.makeText(getContext(), "请输入矩阵A", Toast.LENGTH_SHORT).show();
-            return;
+        // Keyboard targets focused matrix input
+        View kbView = view.findViewById(R.id.kb_root);
+        if (kbView != null) {
+            MathKeyboardHelper kb = new MathKeyboardHelper(kbView, text -> {
+                if (focusedInput != null) focusedInput.append(text);
+            });
+            kb.getBackspaceButton().setOnClickListener(v -> {
+                if (focusedInput != null) {
+                    String t = focusedInput.getText().toString();
+                    if (!t.isEmpty()) focusedInput.setText(t.substring(0, t.length() - 1));
+                }
+            });
+            kb.getAcButton().setOnClickListener(v -> {
+                if (focusedInput != null) focusedInput.setText("");
+            });
+            kb.getEqualsButton().setOnClickListener(v -> {
+                if (focusedInput != null) focusedInput.append("\n");
+            });
         }
 
+        // Prevent system keyboard on matrix inputs
+        binding.etMatrixA.setShowSoftInputOnFocus(false);
+        binding.etMatrixA.setOnTouchListener((v, event) -> { v.onTouchEvent(event); return true; });
+        binding.etMatrixB.setShowSoftInputOnFocus(false);
+        binding.etMatrixB.setOnTouchListener((v, event) -> { v.onTouchEvent(event); return true; });
+
+        // Operation buttons
+        binding.btnDeterminant.setOnClickListener(v -> calculate(Op.OP_DET));
+        binding.btnInverse.setOnClickListener(v -> calculate(Op.OP_INV));
+        binding.btnTranspose.setOnClickListener(v -> calculate(Op.OP_TRANS));
+        binding.btnTrace.setOnClickListener(v -> calculate(Op.OP_TRACE));
+        binding.btnAddMatrix.setOnClickListener(v -> calculate(Op.OP_ADD));
+        binding.btnSubMatrix.setOnClickListener(v -> calculate(Op.OP_SUB));
+        binding.btnMulMatrix.setOnClickListener(v -> calculate(Op.OP_MUL));
+    }
+
+    enum Op { OP_DET, OP_INV, OP_TRANS, OP_TRACE, OP_ADD, OP_SUB, OP_MUL }
+
+    private void calculate(Op op) {
+        String a = binding.etMatrixA.getText().toString().trim();
+        if (a.isEmpty()) { Toast.makeText(getContext(), "请输入矩阵A", Toast.LENGTH_SHORT).show(); return; }
+
         try {
-            SimpleMatrix matrixA = parseMatrix(inputA);
-
+            SimpleMatrix mA = parseMatrix(a);
             switch (op) {
-                case DET: {
-                    if (matrixA.numRows() != matrixA.numCols()) {
-                        binding.tvMatrixResult.setText("Error: 矩阵不是方阵，无法求行列式");
-                        return;
+                case OP_DET:
+                    if (mA.numRows() != mA.numCols()) { binding.tvMatrixResult.setText("Error: 不是方阵"); return; }
+                    binding.tvMatrixResult.setText("Det = " + fmt(mA.determinant())); break;
+                case OP_INV:
+                    if (mA.numRows() != mA.numCols()) { binding.tvMatrixResult.setText("Error: 不是方阵"); return; }
+                    if (mA.determinant() == 0) { binding.tvMatrixResult.setText("Error: 奇异矩阵"); return; }
+                    binding.tvMatrixResult.setText("Inverse:\n" + matStr(mA.invert())); break;
+                case OP_TRANS:
+                    binding.tvMatrixResult.setText("Transpose:\n" + matStr(mA.transpose())); break;
+                case OP_TRACE:
+                    if (mA.numRows() != mA.numCols()) { binding.tvMatrixResult.setText("Error: 不是方阵"); return; }
+                    binding.tvMatrixResult.setText("Trace = " + fmt(mA.trace())); break;
+                case OP_ADD: case OP_SUB: case OP_MUL: {
+                    String b = binding.etMatrixB.getText().toString().trim();
+                    if (b.isEmpty()) { Toast.makeText(getContext(), "请输入矩阵B", Toast.LENGTH_SHORT).show(); return; }
+                    SimpleMatrix mB = parseMatrix(b);
+                    SimpleMatrix r;
+                    if (op == Op.OP_ADD) {
+                        if (mA.numRows() != mB.numRows() || mA.numCols() != mB.numCols()) {
+                            binding.tvMatrixResult.setText("Error: 维度不同"); return;
+                        }
+                        r = mA.plus(mB);
+                        binding.tvMatrixResult.setText("A+B:\n" + matStr(r));
+                    } else if (op == Op.OP_SUB) {
+                        if (mA.numRows() != mB.numRows() || mA.numCols() != mB.numCols()) {
+                            binding.tvMatrixResult.setText("Error: 维度不同"); return;
+                        }
+                        r = mA.minus(mB);
+                        binding.tvMatrixResult.setText("A-B:\n" + matStr(r));
+                    } else {
+                        if (mA.numCols() != mB.numRows()) {
+                            binding.tvMatrixResult.setText("Error: 维度不匹配"); return;
+                        }
+                        r = mA.mult(mB);
+                        binding.tvMatrixResult.setText("A×B:\n" + matStr(r));
                     }
-                    String result = formatNumber(matrixA.determinant());
-                    binding.tvMatrixResult.setText(getString(R.string.matrix_det_result, result));
-                    break;
-                }
-                case INV: {
-                    if (matrixA.numRows() != matrixA.numCols()) {
-                        binding.tvMatrixResult.setText("Error: 矩阵不是方阵，无法求逆");
-                        return;
-                    }
-                    if (matrixA.determinant() == 0) {
-                        binding.tvMatrixResult.setText("Error: 矩阵奇异，无法求逆（行列式为0）");
-                        return;
-                    }
-                    SimpleMatrix inv = matrixA.invert();
-                    binding.tvMatrixResult.setText(getString(R.string.matrix_inv_result, formatMatrix(inv)));
-                    break;
-                }
-                case TRANS: {
-                    SimpleMatrix trans = matrixA.transpose();
-                    binding.tvMatrixResult.setText(getString(R.string.matrix_trans_result, formatMatrix(trans)));
-                    break;
-                }
-                case TRACE: {
-                    if (matrixA.numRows() != matrixA.numCols()) {
-                        binding.tvMatrixResult.setText("Error: 矩阵不是方阵，无法求迹");
-                        return;
-                    }
-                    String result = formatNumber(matrixA.trace());
-                    binding.tvMatrixResult.setText(getString(R.string.matrix_trace_result, result));
-                    break;
-                }
-                case ADD:
-                case SUB:
-                case MUL: {
-                    String inputB = binding.etMatrixB.getText().toString().trim();
-                    if (inputB.isEmpty()) {
-                        Toast.makeText(getContext(), "请先输入矩阵B", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    SimpleMatrix matrixB = parseMatrix(inputB);
-
-                    SimpleMatrix result;
-                    String opName;
-                    switch (op) {
-                        case ADD:
-                            if (matrixA.numRows() != matrixB.numRows() || matrixA.numCols() != matrixB.numCols()) {
-                                binding.tvMatrixResult.setText("Error: 矩阵维度不同，无法相加");
-                                return;
-                            }
-                            result = matrixA.plus(matrixB);
-                            opName = "A + B";
-                            break;
-                        case SUB:
-                            if (matrixA.numRows() != matrixB.numRows() || matrixA.numCols() != matrixB.numCols()) {
-                                binding.tvMatrixResult.setText("Error: 矩阵维度不同，无法相减");
-                                return;
-                            }
-                            result = matrixA.minus(matrixB);
-                            opName = "A - B";
-                            break;
-                        case MUL:
-                            if (matrixA.numCols() != matrixB.numRows()) {
-                                binding.tvMatrixResult.setText("Error: 矩阵维度不匹配 (" +
-                                        matrixA.numRows() + "x" + matrixA.numCols() +
-                                        " × " + matrixB.numRows() + "x" + matrixB.numCols() + ")，无法相乘");
-                                return;
-                            }
-                            result = matrixA.mult(matrixB);
-                            opName = "A × B";
-                            break;
-                        default:
-                            return;
-                    }
-                    binding.tvMatrixResult.setText(opName + " =\n" + formatMatrix(result));
                     break;
                 }
             }
@@ -135,40 +121,31 @@ public class MatrixFragment extends Fragment {
         }
     }
 
-    private SimpleMatrix parseMatrix(String input) {
-        String[] rows = input.split(",");
-        int numRows = rows.length;
+    private SimpleMatrix parseMatrix(String s) {
+        String[] rows = s.split(",");
         double[][] data = null;
-        for (int i = 0; i < numRows; i++) {
+        for (int i = 0; i < rows.length; i++) {
             String[] cols = rows[i].trim().split("\\s+");
-            if (data == null) {
-                data = new double[numRows][cols.length];
-            }
-            for (int j = 0; j < cols.length; j++) {
-                data[i][j] = Double.parseDouble(cols[j]);
-            }
+            if (data == null) data = new double[rows.length][cols.length];
+            for (int j = 0; j < cols.length; j++) data[i][j] = Double.parseDouble(cols[j]);
         }
         return new SimpleMatrix(data);
     }
 
-    private String formatMatrix(SimpleMatrix m) {
+    private String matStr(SimpleMatrix m) {
         StringBuilder sb = new StringBuilder();
-        int rows = m.numRows();
-        int cols = m.numCols();
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
-                sb.append(formatNumber(m.get(i, j)));
-                if (j < cols - 1) sb.append("  ");
+        for (int i = 0; i < m.numRows(); i++) {
+            for (int j = 0; j < m.numCols(); j++) {
+                sb.append(fmt(m.get(i, j)));
+                if (j < m.numCols() - 1) sb.append("  ");
             }
-            if (i < rows - 1) sb.append("\n");
+            if (i < m.numRows() - 1) sb.append("\n");
         }
         return sb.toString();
     }
 
-    private String formatNumber(double d) {
-        if (d == Math.floor(d) && !Double.isInfinite(d)) {
-            return String.valueOf((long) d);
-        }
+    private String fmt(double d) {
+        if (d == Math.floor(d) && !Double.isInfinite(d)) return String.valueOf((long) d);
         return String.format("%.4f", d);
     }
 

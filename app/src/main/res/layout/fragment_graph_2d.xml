@@ -3,118 +3,137 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="8dp">
+    android:background="#1C1C1E">
 
-    <!-- Function Input Controls -->
+    <!-- Top controls -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:orientation="horizontal"
-        android:paddingBottom="4dp">
+        android:paddingHorizontal="6dp"
+        android:paddingTop="4dp">
 
-        <Button
-            android:id="@+id/btn_add_function"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="添加函数"
-            android:layout_marginEnd="4dp" />
+        <Button android:id="@+id/btn_add_function"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="添加" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_marginEnd="2dp" />
 
-        <Button
-            android:id="@+id/btn_plot_2d"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/plot"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp" />
+        <Button android:id="@+id/btn_plot_2d"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="绘制" android:textSize="12sp"
+            style="@style/KbButton.Eq" android:layout_marginHorizontal="2dp" />
 
-        <Button
-            android:id="@+id/btn_clear_all"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="清空所有"
-            android:layout_marginStart="4dp" />
-
+        <Button android:id="@+id/btn_clear_all"
+            android:layout_width="0dp" android:layout_height="match_parent"
+            android:layout_weight="1" android:text="清空" android:textSize="12sp"
+            style="@style/KbButton.AC" android:layout_marginStart="2dp" />
     </LinearLayout>
 
-    <!-- X Range Controls -->
+    <!-- Mode & Range -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingBottom="4dp">
+        android:paddingHorizontal="6dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="X范围:"
-            android:textSize="14sp" />
+        <Button android:id="@+id/btn_mode_normal"
+            android:layout_width="wrap_content" android:layout_height="match_parent"
+            android:text="y=f(x)" android:textSize="11sp"
+            style="@style/KbButton.Func" />
 
-        <EditText
-            android:id="@+id/et_x_min"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal|numberSigned"
-            android:text="-10"
-            android:textSize="14sp"
-            android:gravity="center"
-            android:layout_marginStart="4dp" />
+        <Button android:id="@+id/btn_mode_param"
+            android:layout_width="wrap_content" android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:text="参数" android:textSize="11sp"
+            style="@style/KbButton.Func" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" ~ "
-            android:textSize="14sp" />
+        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text=" X:" android:textSize="12sp" android:textColor="#888"
+            android:layout_marginStart="6dp" />
 
-        <EditText
-            android:id="@+id/et_x_max"
-            android:layout_width="48dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal|numberSigned"
-            android:text="10"
-            android:textSize="14sp"
-            android:gravity="center" />
+        <EditText android:id="@+id/et_x_min" android:text="-10"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:gravity="center" android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:background="@null"
+            android:inputType="numberDecimal|numberSigned" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="   步长:"
-            android:textSize="14sp" />
+        <TextView android:text="~" android:textSize="11sp" android:textColor="#555" />
 
-        <EditText
-            android:id="@+id/et_step"
-            android:layout_width="56dp"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:text="0.1"
-            android:textSize="14sp"
-            android:gravity="center" />
+        <EditText android:id="@+id/et_x_max" android:text="10"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:gravity="center" android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:background="@null"
+            android:inputType="numberDecimal|numberSigned" />
 
+        <TextView android:text=" 步" android:textSize="11sp" android:textColor="#555" />
+
+        <EditText android:id="@+id/et_step" android:text="0.1"
+            android:layout_width="38dp" android:layout_height="match_parent"
+            android:gravity="center" android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:background="@null"
+            android:inputType="numberDecimal" />
     </LinearLayout>
 
-    <!-- Functions Container -->
+    <!-- T range -->
+    <LinearLayout android:id="@+id/layout_t_range"
+        android:layout_width="match_parent" android:layout_height="30dp"
+        android:orientation="horizontal" android:gravity="center_vertical"
+        android:paddingHorizontal="6dp" android:visibility="gone">
+
+        <TextView android:text=" t:" android:textSize="12sp" android:textColor="#888" />
+
+        <EditText android:id="@+id/et_t_min" android:text="0"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:gravity="center" android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:background="@null"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <TextView android:text="~" android:textSize="11sp" android:textColor="#555" />
+
+        <EditText android:id="@+id/et_t_max" android:text="6.283"
+            android:layout_width="38dp" android:layout_height="match_parent"
+            android:gravity="center" android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:background="@null"
+            android:inputType="numberDecimal|numberSigned" />
+
+        <TextView android:text=" 步" android:textSize="11sp" android:textColor="#555" />
+
+        <EditText android:id="@+id/et_t_step" android:text="0.02"
+            android:layout_width="38dp" android:layout_height="match_parent"
+            android:gravity="center" android:textSize="12sp"
+            android:textColor="@android:color/white"
+            android:background="@null"
+            android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <!-- Function list -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:maxHeight="120dp">
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-        <LinearLayout
-            android:id="@+id/functions_container"
+        <LinearLayout android:id="@+id/functions_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" />
-
+            android:orientation="vertical"
+            android:padding="4dp" />
     </ScrollView>
 
-    <!-- Chart -->
+    <!-- Chart (shrinks when keyboard is visible) -->
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart_2d"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="2"
+        android:background="#121214" />
+
+    <!-- Math keyboard -->
+    <include layout="@layout/layout_math_keyboard" android:id="@+id/kb_root" />
 
 </LinearLayout>
