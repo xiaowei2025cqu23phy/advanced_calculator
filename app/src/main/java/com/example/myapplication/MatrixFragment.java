@@ -32,25 +32,24 @@ public class MatrixFragment extends Fragment {
         binding.etMatrixA.setOnFocusChangeListener((v, hasFocus) -> { if (hasFocus) focusedInput = binding.etMatrixA; });
         binding.etMatrixB.setOnFocusChangeListener((v, hasFocus) -> { if (hasFocus) focusedInput = binding.etMatrixB; });
 
-        // Keyboard targets focused matrix input
-        View kbView = view.findViewById(R.id.kb_root);
-        if (kbView != null) {
-            MathKeyboardHelper kb = new MathKeyboardHelper(kbView, text -> {
-                if (focusedInput != null) focusedInput.append(text);
-            });
-            kb.getBackspaceButton().setOnClickListener(v -> {
-                if (focusedInput != null) {
-                    String t = focusedInput.getText().toString();
-                    if (!t.isEmpty()) focusedInput.setText(t.substring(0, t.length() - 1));
-                }
-            });
-            kb.getAcButton().setOnClickListener(v -> {
-                if (focusedInput != null) focusedInput.setText("");
-            });
-            kb.getEqualsButton().setOnClickListener(v -> {
-                if (focusedInput != null) focusedInput.append("\n");
-            });
-        }
+        // Inflate keyboard programmatically
+        View kbView = getLayoutInflater().inflate(R.layout.layout_math_keyboard,
+            view.findViewById(R.id.kb_container), true);
+        MathKeyboardHelper kb = new MathKeyboardHelper(kbView, text -> {
+            if (focusedInput != null) focusedInput.append(text);
+        });
+        kb.getBackspaceButton().setOnClickListener(v -> {
+            if (focusedInput != null) {
+                String t = focusedInput.getText().toString();
+                if (!t.isEmpty()) focusedInput.setText(t.substring(0, t.length() - 1));
+            }
+        });
+        kb.getAcButton().setOnClickListener(v -> {
+            if (focusedInput != null) focusedInput.setText("");
+        });
+        kb.getEqualsButton().setOnClickListener(v -> {
+            if (focusedInput != null) focusedInput.append("\n");
+        });
 
         // Prevent system keyboard on matrix inputs
         binding.etMatrixA.setShowSoftInputOnFocus(false);

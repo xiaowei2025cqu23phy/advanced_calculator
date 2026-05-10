@@ -40,7 +40,15 @@ public class Graph3DRenderer implements GLSurfaceView.Renderer {
     private final float[] mvpMatrix = new float[16];
 
     private volatile String functionExpr = "sin(x)*cos(y)";
+    private volatile boolean curveMode = false;
+    private volatile String curveX, curveY, curveZ;
+    private volatile float tMin = 0, tMax = 6.283f, tStep = 0.02f;
     private volatile boolean needsUpdate = true;
+
+    // Curve buffers
+    private FloatBuffer curveVertexBuffer;
+    private FloatBuffer curveColorBuffer;
+    private int curveVertexCount;
 
     // Rotation
     private float rotX = -25f;
@@ -48,6 +56,15 @@ public class Graph3DRenderer implements GLSurfaceView.Renderer {
 
     public void setFunction(String expr) {
         functionExpr = expr;
+        curveMode = false;
+        needsUpdate = true;
+    }
+
+    public void setParametricFunction(String xExpr, String yExpr, String zExpr,
+                                       float minT, float maxT, float stepT) {
+        curveX = xExpr; curveY = yExpr; curveZ = zExpr;
+        tMin = minT; tMax = maxT; tStep = stepT;
+        curveMode = true;
         needsUpdate = true;
     }
 
@@ -63,6 +80,7 @@ public class Graph3DRenderer implements GLSurfaceView.Renderer {
     public void onSurfaceCreated(GL10 gl, EGLConfig config) {
         GLES20.glClearColor(0.12f, 0.12f, 0.14f, 1f);
         GLES20.glEnable(GLES20.GL_DEPTH_TEST);
+        GLES20.glLineWidth(3f);
 
         program = createProgram(vertexShaderSource, fragmentShaderSource);
         muMVPMatrixHandle = GLES20.glGetUniformLocation(program, "uMVPMatrix");
@@ -70,6 +88,7 @@ public class Graph3DRenderer implements GLSurfaceView.Renderer {
         maColorHandle = GLES20.glGetAttribLocation(program, "aColor");
 
         generateMesh();
+        generateCurve();
         generateAxesAndGrid();
     }
 
@@ -84,6 +103,7 @@ public class Graph3DRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         if (needsUpdate) {
             generateMesh();
+            generateCurve();
             generateAxesAndGrid();
             needsUpdate = false;
         }
@@ -103,8 +123,15 @@ public class Graph3DRenderer implements GLSurfaceView.Renderer {
         GLES20.glUseProgram(program);
         GLES20.glUniformMatrix4fv(muMVPMatrixHandle, 1, false, mvpMatrix, 0);
 
+        // Draw axes & grid first
         drawBuffer(axisVertexBuffer, axisColorBuffer, axisVertexCount, GLES20.GL_LINES);
-        drawBuffer(vertexBuffer, colorBuffer, vertexCount, GLES20.GL_TRIANGLE_STRIP);
+
+        // Draw surface or curve
+        if (curveMode && curveVertexCount > 0) {
+            drawBuffer(curveVertexBuffer, curveColorBuffer, curveVertexCount, GLES20.GL_LINE_STRIP);
+        } else {
+            drawBuffer(vertexBuffer, colorBuffer, vertexCount, GLES20.GL_TRIANGLE_STRIP);
+        }
     }
 
     private void drawBuffer(FloatBuffer vBuf, FloatBuffer cBuf, int count, int mode) {
@@ -183,6 +210,64 @@ public class Graph3DRenderer implements GLSurfaceView.Renderer {
 
         vertexBuffer = makeBuffer(verts);
         colorBuffer = makeBuffer(cols);
+    }
+
+    // ─── Parametric Curve ──────────────────────────────────────
+
+    private void generateCurve() {
+        if (!curveMode || curveX == null) return;
+
+        Argument t = new Argument("t");
+        Expression ex = new Expression(curveX, t);
+        Expression ey = new Expression(curveY, t);
+        Expression ez = new Expression(curveZ, t);
+
+        if (!ex.checkSyntax() || !ey.checkSyntax() || !ez.checkSyntax()) {
+            curveVertexCount = 0;
+            return;
+        }
+
+        // First pass: compute bounds for auto-scaling
+        java.util.ArrayList<Float> pts = new java.util.ArrayList<>();
+        float maxAbs = 0;
+
+        for (double v = tMin; v <= tMax + tStep * 0.5; v += tStep) {
+            t.setArgumentValue(v);
+            double x = ex.calculate(); if (Double.isNaN(x) || Double.isInfinite(x)) continue;
+            double y = ey.calculate(); if (Double.isNaN(y) || Double.isInfinite(y)) continue;
+            double z = ez.calculate(); if (Double.isNaN(z) || Double.isInfinite(z)) continue;
+            pts.add((float)x); pts.add((float)y); pts.add((float)z);
+            maxAbs = Math.max(maxAbs, Math.max(Math.abs((float)x),
+                     Math.max(Math.abs((float)y), Math.abs((float)z))));
+        }
+
+        if (pts.size() < 6) { curveVertexCount = 0; return; }
+        if (maxAbs < 0.01f) maxAbs = 1f;
+
+        float scale = RANGE * 0.95f / maxAbs;
+        int n = pts.size() / 3;
+        float[] verts = new float[n * 3];
+        float[] cols = new float[n * 4];
+
+        for (int i = 0; i < n; i++) {
+            verts[i * 3] = pts.get(i * 3) * scale;
+            verts[i * 3 + 1] = pts.get(i * 3 + 1) * scale;
+            verts[i * 3 + 2] = pts.get(i * 3 + 2) * scale;
+            float c = (float) i / n;
+            rainbowColor(c, cols, i * 4);
+        }
+
+        curveVertexCount = n;
+        curveVertexBuffer = makeBuffer(verts);
+        curveColorBuffer = makeBuffer(cols);
+    }
+
+    private void rainbowColor(float t, float[] out, int off) {
+        float r = (float)(Math.sin(t * 6.283 * 2) * 0.5 + 0.5);
+        float g = (float)(Math.sin(t * 6.283 * 2 + 2.094) * 0.5 + 0.5);
+        float b = (float)(Math.sin(t * 6.283 * 2 + 4.188) * 0.5 + 0.5);
+        out[off] = clamp(r); out[off+1] = clamp(g);
+        out[off+2] = clamp(b); out[off+3] = 1f;
     }
 
     // ─── Axes & Grid ───────────────────────────────────────────

@@ -112,28 +112,30 @@
             android:inputType="numberDecimal" />
     </LinearLayout>
 
-    <!-- Function list -->
+    <!-- Function list (shrink-wrapped) -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="wrap_content"
+        android:maxHeight="80dp">
 
         <LinearLayout android:id="@+id/functions_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="4dp" />
+            android:padding="2dp" />
     </ScrollView>
 
-    <!-- Chart (shrinks when keyboard is visible) -->
-    <com.github.mikephil.charting.charts.LineChart
+    <!-- Chart (takes remaining space) -->
+    <com.example.myapplication.SimpleChartView
         android:id="@+id/chart_2d"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2"
-        android:background="#121214" />
+        android:layout_weight="1" />
 
-    <!-- Math keyboard -->
-    <include layout="@layout/layout_math_keyboard" android:id="@+id/kb_root" />
+    <!-- Keyboard container (inflated programmatically) -->
+    <FrameLayout
+        android:id="@+id/kb_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

@@ -116,7 +116,10 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- Math keyboard -->
-    <include layout="@layout/layout_math_keyboard" android:id="@+id/kb_root" />
+    <!-- Keyboard container (inflated programmatically) -->
+    <FrameLayout
+        android:id="@+id/kb_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

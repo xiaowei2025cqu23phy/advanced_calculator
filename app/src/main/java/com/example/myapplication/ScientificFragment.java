@@ -33,24 +33,23 @@ public class ScientificFragment extends Fragment {
             return true;
         });
 
-        // Compact math keyboard
-        View kbView = view.findViewById(R.id.kb_root);
-        if (kbView != null) {
-            MathKeyboardHelper kb = new MathKeyboardHelper(kbView, text -> {
-                binding.etExpression.append(text);
-            });
-            kb.getEqualsButton().setOnClickListener(v -> calculateResult());
-            kb.getAcButton().setOnClickListener(v -> {
-                binding.etExpression.setText("");
-                binding.tvResult.setText("");
-            });
-            kb.getBackspaceButton().setOnClickListener(v -> {
-                String t = binding.etExpression.getText().toString();
-                if (!t.isEmpty()) {
-                    binding.etExpression.setText(t.substring(0, t.length() - 1));
-                }
-            });
-        }
+        // Inflate keyboard programmatically
+        View kbView = getLayoutInflater().inflate(R.layout.layout_math_keyboard,
+            view.findViewById(R.id.kb_container), true);
+        MathKeyboardHelper kb = new MathKeyboardHelper(kbView, text -> {
+            binding.etExpression.append(text);
+        });
+        kb.getEqualsButton().setOnClickListener(v -> calculateResult());
+        kb.getAcButton().setOnClickListener(v -> {
+            binding.etExpression.setText("");
+            binding.tvResult.setText("");
+        });
+        kb.getBackspaceButton().setOnClickListener(v -> {
+            String t = binding.etExpression.getText().toString();
+            if (!t.isEmpty()) {
+                binding.etExpression.setText(t.substring(0, t.length() - 1));
+            }
+        });
 
         // Toolbar buttons
         binding.btnDeg.setOnClickListener(v -> {
