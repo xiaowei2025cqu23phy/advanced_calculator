@@ -12,7 +12,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/matrix_input_label" />
+            android:text="矩阵A (行用逗号分隔, 元素用空格分隔):" />
 
         <EditText
             android:id="@+id/et_matrix_a"
@@ -22,11 +22,19 @@
             android:autofillHints=""
             android:inputType="textMultiLine" />
 
+        <!-- Single Matrix Operations -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="单矩阵运算:"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold" />
+
         <GridLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2"
-            android:rowCount="2">
+            android:columnCount="4"
+            android:rowCount="1">
 
             <Button
                 android:id="@+id/btn_determinant"
@@ -55,15 +63,73 @@
                 android:layout_height="wrap_content"
                 android:layout_columnWeight="1"
                 android:text="@string/btn_trace_short" />
+
         </GridLayout>
 
+        <!-- Matrix B -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="矩阵B (用于双矩阵运算):"
+            android:layout_marginTop="16dp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/et_matrix_b"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/matrix_hint"
+            android:autofillHints=""
+            android:inputType="textMultiLine" />
+
+        <!-- Binary Matrix Operations -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="双矩阵运算:"
+            android:layout_marginTop="12dp"
+            android:textStyle="bold" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:columnCount="3"
+            android:rowCount="1">
+
+            <Button
+                android:id="@+id/btn_add_matrix"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="A+B" />
+
+            <Button
+                android:id="@+id/btn_sub_matrix"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="A-B" />
+
+            <Button
+                android:id="@+id/btn_mul_matrix"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:text="A×B" />
+
+        </GridLayout>
+
+        <!-- Result -->
         <TextView
             android:id="@+id/tv_matrix_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:textSize="18sp"
-            android:textIsSelectable="true" />
+            android:textSize="16sp"
+            android:textIsSelectable="true"
+            android:fontFamily="monospace"
+            android:background="#1A000000"
+            android:padding="12dp" />
 
     </LinearLayout>
 </ScrollView>

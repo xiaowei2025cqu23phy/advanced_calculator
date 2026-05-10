@@ -3,23 +3,42 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
-    <EditText
-        android:id="@+id/et_function_3d"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="f(x,y) = sin(x)*cos(y)"
-        android:inputType="textNoSuggestions" />
+        android:orientation="horizontal"
+        android:paddingBottom="8dp">
 
-    <Button
-        android:id="@+id/btn_plot_3d"
-        android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/et_function_3d"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="f(x,y) = sin(x)*cos(y)"
+            android:inputType="textNoSuggestions"
+            android:padding="8dp"
+            android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/btn_plot_3d"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/plot_3d"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Plot 3D" />
+        android:text="@string/plot_3d_hint"
+        android:textSize="12sp"
+        android:paddingBottom="4dp" />
 
-    <FrameLayout
-        android:id="@+id/container_3d"
+    <android.opengl.GLSurfaceView
+        android:id="@+id/gl_surface"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1" />

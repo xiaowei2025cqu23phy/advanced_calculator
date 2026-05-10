@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Advanced Calculator</string>
     <string name="action_settings">Settings</string>
@@ -28,6 +29,33 @@
     <string name="btn_inv_short">Inverse</string>
     <string name="btn_trans_short">Transpose</string>
     <string name="btn_trace_short">Trace</string>
+
+    <!-- Calculator functions -->
+    <string name="sin">sin</string>
+    <string name="cos">cos</string>
+    <string name="tan">tan</string>
+    <string name="asin">asin</string>
+    <string name="acos">acos</string>
+    <string name="atan">atan</string>
+    <string name="log">log</string>
+    <string name="ln">ln</string>
+    <string name="sqrt">√</string>
+    <string name="pow">x^y</string>
+    <string name="pi">π</string>
+    <string name="e">e</string>
+    <string name="abs">|x|</string>
+    <string name="fact">n!</string>
+    <string name="frac">1/x</string>
+    <string name="mod">%</string>
+    <string name="deg">DEG</string>
+    <string name="complex_i">i</string>
+    <string name="const_btn">Ans</string>
+    <string name="del">DEL</string>
+    <string name="ac">AC</string>
+    <string name="equals">=</string>
+    <string name="neg">+/-</string>
+
+    <string name="plot_3d_hint">提示: 拖拽屏幕旋转视角，使用 x 和 y 作为变量</string>
 
     <!-- Compatibility for old fragments -->
     <string name="next">Next</string>

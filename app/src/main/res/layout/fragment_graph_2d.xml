@@ -3,22 +3,114 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="8dp">
 
-    <EditText
-        android:id="@+id/et_function_2d"
+    <!-- Function Input Controls -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/function_2d_hint"
-        android:autofillHints=""
-        android:inputType="textNoSuggestions" />
+        android:orientation="horizontal"
+        android:paddingBottom="4dp">
 
-    <Button
-        android:id="@+id/btn_plot_2d"
-        android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/btn_add_function"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="添加函数"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btn_plot_2d"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/plot"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp" />
+
+        <Button
+            android:id="@+id/btn_clear_all"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="清空所有"
+            android:layout_marginStart="4dp" />
+
+    </LinearLayout>
+
+    <!-- X Range Controls -->
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/plot" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingBottom="4dp">
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="X范围:"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/et_x_min"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal|numberSigned"
+            android:text="-10"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginStart="4dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" ~ "
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/et_x_max"
+            android:layout_width="48dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal|numberSigned"
+            android:text="10"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="   步长:"
+            android:textSize="14sp" />
+
+        <EditText
+            android:id="@+id/et_step"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:inputType="numberDecimal"
+            android:text="0.1"
+            android:textSize="14sp"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+    <!-- Functions Container -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:maxHeight="120dp">
+
+        <LinearLayout
+            android:id="@+id/functions_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </ScrollView>
+
+    <!-- Chart -->
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart_2d"
         android:layout_width="match_parent"
