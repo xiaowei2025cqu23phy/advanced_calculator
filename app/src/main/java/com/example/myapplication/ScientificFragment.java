@@ -1,19 +1,28 @@
 package com.example.myapplication;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import com.example.myapplication.databinding.FragmentScientificBinding;
-import org.mariuszgromada.math.mxparser.Expression;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapplication.databinding.FragmentScientificBinding;
+import com.example.myapplication.repository.HistoryRepository;
+import com.example.myapplication.viewmodel.ScientificViewModel;
+
+/**
+ * UI-only layer. All calculation logic is delegated to ScientificViewModel + CalculationRepository.
+ */
 public class ScientificFragment extends Fragment {
 
     private FragmentScientificBinding binding;
-    private boolean degreeMode = false; // default RAD
+    private ScientificViewModel viewModel;
+    private boolean degreeMode = false;
     private String lastResult = "";
 
     @Override
@@ -23,7 +32,7 @@ public class ScientificFragment extends Fragment {
             return binding.getRoot();
         } catch (Exception e) {
             TextView tv = new TextView(inflater.getContext());
-            tv.setText("inflate: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+            tv.setText("加载失败: " + e.getClass().getSimpleName());
             tv.setTextColor(0xFFFFFFFF);
             tv.setBackgroundColor(0xFF1C1C1E);
             tv.setGravity(17);
@@ -36,15 +45,47 @@ public class ScientificFragment extends Fragment {
         if (binding == null) return;
 
         try {
+            viewModel = new ViewModelProvider(this).get(ScientificViewModel.class);
+
+            // Observe results
+            viewModel.getResult().observe(getViewLifecycleOwner(), result -> {
+                if (result != null && result.isSuccess()) {
+                    String s = viewModel.formatResult(result);
+                    binding.tvResult.setText("= " + s);
+                    lastResult = s;
+                }
+            });
+
+            viewModel.getHistory().observe(getViewLifecycleOwner(), history -> {
+                // history is auto-saved; no UI update needed here
+            });
+
+            viewModel.getErrorMessage().observe(getViewLifecycleOwner(), msg -> {
+                if (msg != null) binding.tvResult.setText("错误: " + msg);
+            });
+
+            viewModel.isLoading().observe(getViewLifecycleOwner(), loading -> {
+                if (loading) binding.tvResult.setText("计算中...");
+            });
+
+            // Prevent system keyboard
             binding.etExpression.setShowSoftInputOnFocus(false);
             binding.etExpression.setOnTouchListener((v, event) -> { v.onTouchEvent(event); return true; });
+            // Update LaTeX preview as user types
+            binding.etExpression.addTextChangedListener(new android.text.TextWatcher() {
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                public void onTextChanged(CharSequence s, int start, int before, int count) {}
+                public void afterTextChanged(android.text.Editable s) {
+                    binding.latexPreview.setExpression(s.toString());
+                }
+            });
 
-            // Inflate keyboard manually
+            // Inflate keyboard
             ViewGroup kbc = (ViewGroup) view.findViewById(R.id.kb_container);
             if (kbc != null) {
                 View kbv = getLayoutInflater().inflate(R.layout.layout_math_keyboard, kbc, true);
                 MathKeyboardHelper kb = new MathKeyboardHelper(kbv, text -> binding.etExpression.append(text));
-                kb.getEqualsButton().setOnClickListener(v -> calc());
+                kb.getEqualsButton().setOnClickListener(v -> calculate());
                 kb.getBackspaceButton().setOnClickListener(v -> {
                     String t = binding.etExpression.getText().toString();
                     if (!t.isEmpty()) binding.etExpression.setText(t.substring(0, t.length() - 1));
@@ -55,18 +96,22 @@ public class ScientificFragment extends Fragment {
                 });
             }
 
+            // Toolbar
             updateDegDisplay();
             binding.btnDeg.setOnClickListener(v -> {
                 degreeMode = !degreeMode;
                 updateDegDisplay();
             });
-            binding.btnAns.setOnClickListener(v -> { if (!lastResult.isEmpty()) binding.etExpression.append(lastResult); });
+            binding.btnAns.setOnClickListener(v -> {
+                if (!lastResult.isEmpty()) binding.etExpression.append(lastResult);
+            });
+            binding.btnAns.setOnLongClickListener(v -> { showHistory(); return true; });
             binding.btnComplexI.setOnClickListener(v -> binding.etExpression.append("i"));
             binding.btnPi.setOnClickListener(v -> binding.etExpression.append("pi"));
             binding.btnE.setOnClickListener(v -> binding.etExpression.append("e"));
 
         } catch (Exception e) {
-            binding.tvResult.setText("err: " + e.getClass().getSimpleName());
+            binding.tvResult.setText("初始化错误: " + e.getClass().getSimpleName());
         }
     }
 
@@ -76,32 +121,30 @@ public class ScientificFragment extends Fragment {
         binding.tvModeIndicator.setTextColor(degreeMode ? 0xFFFF9F0A : 0xFF888888);
     }
 
-    private void calc() {
+    private void calculate() {
         String expr = binding.etExpression.getText().toString();
         if (expr.isEmpty()) return;
-        expr = expr.replace("×", "*").replace("÷", "/").replace("−", "-");
-        if (degreeMode) {
-            expr = expr.replaceAll("\\bsin\\(", "sin(pi/180*");
-            expr = expr.replaceAll("\\bcos\\(", "cos(pi/180*");
-            expr = expr.replaceAll("\\btan\\(", "tan(pi/180*");
-            expr = expr.replaceAll("\\basin\\(", "180/pi*asin(");
-            expr = expr.replaceAll("\\bacos\\(", "180/pi*acos(");
-            expr = expr.replaceAll("\\batan\\(", "180/pi*atan(");
+        viewModel.calculate(expr, degreeMode);
+    }
+
+    private void showHistory() {
+        java.util.List<HistoryRepository.Entry> items = viewModel.getHistory().getValue();
+        if (items == null || items.isEmpty()) {
+            binding.tvResult.setText("暂无历史记录");
+            return;
         }
-        try {
-            double r = new Expression(expr).calculate();
-            if (Double.isNaN(r)) {
-                binding.tvResult.setText("无效");
-            } else if (Double.isInfinite(r)) {
-                binding.tvResult.setText("无穷");
-            } else {
-                String s = (r == Math.floor(r) && !Double.isInfinite(r)) ? String.valueOf((long) r) : String.valueOf(r);
-                binding.tvResult.setText("= " + s);
-                lastResult = s;
-            }
-        } catch (Exception ex) {
-            binding.tvResult.setText("错误");
+        CharSequence[] lines = new CharSequence[Math.min(items.size(), 50)];
+        for (int i = 0; i < lines.length; i++) {
+            HistoryRepository.Entry e = items.get(i);
+            lines[i] = e.getExpression() + " = " + e.getResult();
         }
+        new AlertDialog.Builder(getContext())
+            .setTitle("历史记录 (长按清空)")
+            .setItems(lines, (dialog, which) -> {
+                binding.etExpression.setText(items.get(which).getExpression());
+            })
+            .setPositiveButton("清空", (d, w) -> viewModel.clearHistory())
+            .show();
     }
 
     @Override

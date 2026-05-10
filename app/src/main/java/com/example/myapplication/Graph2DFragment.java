@@ -11,18 +11,21 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.databinding.FragmentGraph2dBinding;
-
-import org.mariuszgromada.math.mxparser.Argument;
-import org.mariuszgromada.math.mxparser.Expression;
+import com.example.myapplication.viewmodel.GraphViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * UI-only layer. 2D plotting delegated to GraphViewModel → PlotEngine (async).
+ */
 public class Graph2DFragment extends Fragment {
 
     private FragmentGraph2dBinding binding;
+    private GraphViewModel viewModel;
     private int plotMode = 0; // 0=y=f(x), 1=parametric, 2=polar
     private EditText focusedInput;
 
@@ -39,7 +42,26 @@ public class Graph2DFragment extends Fragment {
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(GraphViewModel.class);
         setupChart();
+
+        // Observe computed curves
+        viewModel.getCurves().observe(getViewLifecycleOwner(), curves -> {
+            if (curves == null || curves.isEmpty()) return;
+            binding.chart2d.clearCurves();
+            for (GraphViewModel.CurveResult c : curves) {
+                binding.chart2d.addCurve(c.getPoints(), c.getColor(), c.getLabel());
+            }
+        });
+
+        viewModel.getError().observe(getViewLifecycleOwner(), msg -> {
+            if (msg != null) Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        });
+
+        viewModel.isLoading().observe(getViewLifecycleOwner(), loading -> {
+            // Could show a progress indicator here
+        });
 
         // Inflate keyboard programmatically
         View kbView = getLayoutInflater().inflate(R.layout.layout_math_keyboard,
@@ -47,7 +69,7 @@ public class Graph2DFragment extends Fragment {
         MathKeyboardHelper kb = new MathKeyboardHelper(kbView, text -> {
             if (focusedInput != null) focusedInput.append(text);
         });
-        if (kbView.findViewById(R.id.kb_7) != null) { // verify keyboard loaded
+        if (kbView.findViewById(R.id.kb_7) != null) {
             kb.getEqualsButton().setOnClickListener(v -> plotAllGraphs());
             kb.getBackspaceButton().setOnClickListener(v -> {
                 if (focusedInput != null) {
@@ -136,11 +158,11 @@ public class Graph2DFragment extends Fragment {
     }
 
     private void plotNormal() {
-        float xMin, xMax, step;
+        double xMin, xMax, step;
         try {
-            xMin = Float.parseFloat(binding.etXMin.getText().toString());
-            xMax = Float.parseFloat(binding.etXMax.getText().toString());
-            step = Float.parseFloat(binding.etStep.getText().toString());
+            xMin = Double.parseDouble(binding.etXMin.getText().toString());
+            xMax = Double.parseDouble(binding.etXMax.getText().toString());
+            step = Double.parseDouble(binding.etStep.getText().toString());
         } catch (NumberFormatException e) {
             Toast.makeText(getContext(), "范围无效", Toast.LENGTH_SHORT).show(); return;
         }
@@ -148,50 +170,27 @@ public class Graph2DFragment extends Fragment {
             Toast.makeText(getContext(), "范围不正确", Toast.LENGTH_SHORT).show(); return;
         }
 
-        List<String> funcs = new ArrayList<>();
+        List<GraphViewModel.CartesianInput> inputs = new ArrayList<>();
         for (int i = 0; i < binding.functionsContainer.getChildCount(); i++) {
             View c = binding.functionsContainer.getChildAt(i);
             if (c instanceof LinearLayout) {
                 String txt = ((EditText) ((LinearLayout) c).getChildAt(0)).getText().toString().trim();
-                if (!txt.isEmpty()) funcs.add(txt);
+                if (!txt.isEmpty()) {
+                    inputs.add(new GraphViewModel.CartesianInput(txt, COLORS[inputs.size() % COLORS.length], "f" + (inputs.size() + 1)));
+                }
             }
         }
-        if (funcs.isEmpty()) { Toast.makeText(getContext(), "请添加函数", Toast.LENGTH_SHORT).show(); return; }
+        if (inputs.isEmpty()) { Toast.makeText(getContext(), "请添加函数", Toast.LENGTH_SHORT).show(); return; }
 
-        binding.chart2d.clearCurves();
-        int ci = 0;
-        for (String f : funcs) {
-            List<float[]> pts = eval(f, xMin, xMax, step);
-            if (!pts.isEmpty()) {
-                binding.chart2d.addCurve(pts, COLORS[ci % COLORS.length], "f" + (ci+1));
-                ci++;
-            }
-        }
-        if (ci == 0) { Toast.makeText(getContext(), "无法绘制", Toast.LENGTH_SHORT).show(); return; }
-    }
-
-    private List<float[]> eval(String expr, float min, float max, float step) {
-        List<float[]> pts = new ArrayList<>();
-        try {
-            Argument x = new Argument("x");
-            Expression e = new Expression(expr, x);
-            if (!e.checkSyntax()) return pts;
-            for (double v = min; v <= max + step * 0.5; v += step) {
-                x.setArgumentValue(v);
-                double y = e.calculate();
-                if (!Double.isNaN(y) && !Double.isInfinite(y))
-                    pts.add(new float[]{(float)v, (float)y});
-            }
-        } catch (Exception ignored) {}
-        return pts;
+        viewModel.generateCartesian(inputs, xMin, xMax, step);
     }
 
     private void plotParametric() {
-        float tMin, tMax, tStep;
+        double tMin, tMax, tStep;
         try {
-            tMin = Float.parseFloat(binding.etTMin.getText().toString());
-            tMax = Float.parseFloat(binding.etTMax.getText().toString());
-            tStep = Float.parseFloat(binding.etTStep.getText().toString());
+            tMin = Double.parseDouble(binding.etTMin.getText().toString());
+            tMax = Double.parseDouble(binding.etTMax.getText().toString());
+            tStep = Double.parseDouble(binding.etTStep.getText().toString());
         } catch (NumberFormatException e) {
             Toast.makeText(getContext(), "t范围无效", Toast.LENGTH_SHORT).show(); return;
         }
@@ -199,7 +198,7 @@ public class Graph2DFragment extends Fragment {
             Toast.makeText(getContext(), "范围不正确", Toast.LENGTH_SHORT).show(); return;
         }
 
-        List<String[]> funcs = new ArrayList<>();
+        List<GraphViewModel.ParametricInput> inputs = new ArrayList<>();
         for (int i = 0; i < binding.functionsContainer.getChildCount(); i++) {
             View c = binding.functionsContainer.getChildAt(i);
             if (c instanceof LinearLayout) {
@@ -207,30 +206,24 @@ public class Graph2DFragment extends Fragment {
                 if (row.getChildCount() >= 3) {
                     String xs = ((EditText) row.getChildAt(0)).getText().toString().trim();
                     String ys = ((EditText) row.getChildAt(1)).getText().toString().trim();
-                    if (!xs.isEmpty() && !ys.isEmpty()) funcs.add(new String[]{xs, ys});
+                    if (!xs.isEmpty() && !ys.isEmpty()) {
+                        inputs.add(new GraphViewModel.ParametricInput(xs, ys,
+                            COLORS[inputs.size() % COLORS.length], "C" + (inputs.size() + 1)));
+                    }
                 }
             }
         }
-        if (funcs.isEmpty()) { Toast.makeText(getContext(), "请添加参数方程", Toast.LENGTH_SHORT).show(); return; }
+        if (inputs.isEmpty()) { Toast.makeText(getContext(), "请添加参数方程", Toast.LENGTH_SHORT).show(); return; }
 
-        binding.chart2d.clearCurves();
-        int ci = 0;
-        for (String[] p : funcs) {
-            List<float[]> pts = evalParam(p[0], p[1], tMin, tMax, tStep);
-            if (!pts.isEmpty()) {
-                binding.chart2d.addCurve(pts, COLORS[ci % COLORS.length], "C" + (ci+1));
-                ci++;
-            }
-        }
-        if (ci == 0) { Toast.makeText(getContext(), "无法绘制", Toast.LENGTH_SHORT).show(); }
+        viewModel.generateParametric(inputs, tMin, tMax, tStep);
     }
 
     private void plotPolar() {
-        float tMin, tMax, tStep;
+        double tMin, tMax, tStep;
         try {
-            tMin = Float.parseFloat(binding.etTMin.getText().toString());
-            tMax = Float.parseFloat(binding.etTMax.getText().toString());
-            tStep = Float.parseFloat(binding.etTStep.getText().toString());
+            tMin = Double.parseDouble(binding.etTMin.getText().toString());
+            tMax = Double.parseDouble(binding.etTMax.getText().toString());
+            tStep = Double.parseDouble(binding.etTStep.getText().toString());
         } catch (NumberFormatException e) {
             Toast.makeText(getContext(), "θ范围无效", Toast.LENGTH_SHORT).show(); return;
         }
@@ -238,70 +231,28 @@ public class Graph2DFragment extends Fragment {
             Toast.makeText(getContext(), "范围不正确", Toast.LENGTH_SHORT).show(); return;
         }
 
-        List<String> funcs = new ArrayList<>();
+        List<GraphViewModel.PolarInput> inputs = new ArrayList<>();
         for (int i = 0; i < binding.functionsContainer.getChildCount(); i++) {
             View c = binding.functionsContainer.getChildAt(i);
             if (c instanceof LinearLayout) {
                 String txt = ((EditText) ((LinearLayout) c).getChildAt(0)).getText().toString().trim();
-                if (!txt.isEmpty()) funcs.add(txt);
-            }
-        }
-        if (funcs.isEmpty()) { Toast.makeText(getContext(), "请添加函数", Toast.LENGTH_SHORT).show(); return; }
-
-        binding.chart2d.clearCurves();
-        int ci = 0;
-        for (String f : funcs) {
-            List<float[]> pts = evalPolar(f, tMin, tMax, tStep);
-            if (!pts.isEmpty()) {
-                binding.chart2d.addCurve(pts, COLORS[ci % COLORS.length], "r" + (ci+1));
-                ci++;
-            }
-        }
-        if (ci == 0) { Toast.makeText(getContext(), "无法绘制", Toast.LENGTH_SHORT).show(); }
-    }
-
-    private List<float[]> evalPolar(String expr, float tMin, float tMax, float tStep) {
-        List<float[]> pts = new ArrayList<>();
-        try {
-            Argument th = new Argument("θ");
-            Expression e = new Expression(expr, th);
-            if (!e.checkSyntax()) return pts;
-            for (double v = tMin; v <= tMax + tStep * 0.5; v += tStep) {
-                th.setArgumentValue(v);
-                double r = e.calculate();
-                if (!Double.isNaN(r) && !Double.isInfinite(r)) {
-                    pts.add(new float[]{(float)(r * Math.cos(v)), (float)(r * Math.sin(v))});
+                if (!txt.isEmpty()) {
+                    inputs.add(new GraphViewModel.PolarInput(txt, COLORS[inputs.size() % COLORS.length], "r" + (inputs.size() + 1)));
                 }
             }
-        } catch (Exception ignored) {}
-        return pts;
-    }
+        }
+        if (inputs.isEmpty()) { Toast.makeText(getContext(), "请添加函数", Toast.LENGTH_SHORT).show(); return; }
 
-    private List<float[]> evalParam(String xs, String ys, float tMin, float tMax, float tStep) {
-        List<float[]> pts = new ArrayList<>();
-        try {
-            Argument t = new Argument("t");
-            Expression ex = new Expression(xs, t);
-            Expression ey = new Expression(ys, t);
-            for (double v = tMin; v <= tMax + tStep * 0.5; v += tStep) {
-                t.setArgumentValue(v);
-                double x = ex.calculate(), y = ey.calculate();
-                if (!Double.isNaN(x) && !Double.isInfinite(x) && !Double.isNaN(y) && !Double.isInfinite(y))
-                    pts.add(new float[]{(float)x, (float)y});
-            }
-        } catch (Exception ignored) {}
-        return pts;
+        viewModel.generatePolar(inputs, tMin, tMax, tStep);
     }
 
     private void clearAllFunctions() {
         binding.functionsContainer.removeAllViews();
         binding.chart2d.clearCurves();
+        viewModel.clear();
         addFunctionInput();
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
-    }
+    public void onDestroyView() { super.onDestroyView(); binding = null; }
 }

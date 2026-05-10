@@ -21,6 +21,14 @@
         android:background="@null"
         android:singleLine="true" />
 
+    <!-- Formula preview (LaTeX-like) -->
+    <com.example.myapplication.LatexPreviewView
+        android:id="@+id/latex_preview"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:paddingHorizontal="12dp"
+        android:paddingTop="4dp" />
+
     <!-- Result + mode indicator -->
     <LinearLayout
         android:layout_width="match_parent"
