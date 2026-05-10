@@ -48,6 +48,12 @@
             android:text="参数" android:textSize="11sp"
             style="@style/KbButton.Func" />
 
+        <Button android:id="@+id/btn_mode_polar"
+            android:layout_width="wrap_content" android:layout_height="match_parent"
+            android:layout_marginStart="2dp"
+            android:text="极坐标" android:textSize="11sp"
+            style="@style/KbButton.Func" />
+
         <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
             android:text=" X:" android:textSize="12sp" android:textColor="#888"
             android:layout_marginStart="6dp" />
@@ -59,7 +65,7 @@
             android:background="@null"
             android:inputType="numberDecimal|numberSigned" />
 
-        <TextView android:text="~" android:textSize="11sp" android:textColor="#555" />
+        <TextView android:text="~" android:layout_width="wrap_content" android:layout_height="match_parent" android:textSize="11sp" android:textColor="#555" android:gravity="center" />
 
         <EditText android:id="@+id/et_x_max" android:text="10"
             android:layout_width="32dp" android:layout_height="match_parent"
@@ -68,7 +74,7 @@
             android:background="@null"
             android:inputType="numberDecimal|numberSigned" />
 
-        <TextView android:text=" 步" android:textSize="11sp" android:textColor="#555" />
+        <TextView android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center" android:text=" 步" android:textSize="11sp" android:textColor="#555" />
 
         <EditText android:id="@+id/et_step" android:text="0.1"
             android:layout_width="38dp" android:layout_height="match_parent"
@@ -84,7 +90,7 @@
         android:orientation="horizontal" android:gravity="center_vertical"
         android:paddingHorizontal="6dp" android:visibility="gone">
 
-        <TextView android:text=" t:" android:textSize="12sp" android:textColor="#888" />
+        <TextView android:text=" t:" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center" android:textSize="12sp" android:textColor="#888" />
 
         <EditText android:id="@+id/et_t_min" android:text="0"
             android:layout_width="32dp" android:layout_height="match_parent"
@@ -93,7 +99,7 @@
             android:background="@null"
             android:inputType="numberDecimal|numberSigned" />
 
-        <TextView android:text="~" android:textSize="11sp" android:textColor="#555" />
+        <TextView android:text="~" android:layout_width="wrap_content" android:layout_height="match_parent" android:textSize="11sp" android:textColor="#555" android:gravity="center" />
 
         <EditText android:id="@+id/et_t_max" android:text="6.283"
             android:layout_width="38dp" android:layout_height="match_parent"
@@ -102,7 +108,7 @@
             android:background="@null"
             android:inputType="numberDecimal|numberSigned" />
 
-        <TextView android:text=" 步" android:textSize="11sp" android:textColor="#555" />
+        <TextView android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center" android:text=" 步" android:textSize="11sp" android:textColor="#555" />
 
         <EditText android:id="@+id/et_t_step" android:text="0.02"
             android:layout_width="38dp" android:layout_height="match_parent"
@@ -110,6 +116,45 @@
             android:textColor="@android:color/white"
             android:background="@null"
             android:inputType="numberDecimal" />
+    </LinearLayout>
+
+    <!-- Variable buttons -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:orientation="horizontal"
+        android:paddingHorizontal="6dp"
+        android:gravity="center_vertical">
+
+        <TextView android:text="变量:" android:textSize="10sp" android:textColor="#888"
+            android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+        <Button android:id="@+id/btn_var_x"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:text="x" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_marginHorizontal="1dp" />
+
+        <Button android:id="@+id/btn_var_y"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:text="y" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_marginHorizontal="1dp" />
+
+        <Button android:id="@+id/btn_var_t"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:text="t" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_marginHorizontal="1dp" />
+
+        <Button android:id="@+id/btn_var_theta"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:text="θ" android:textSize="12sp"
+            style="@style/KbButton.Func" android:layout_marginHorizontal="1dp" />
+
+        <View android:layout_width="0dp" android:layout_height="0dp" android:layout_weight="1" />
+
+        <Button android:id="@+id/btn_var_comma"
+            android:layout_width="24dp" android:layout_height="match_parent"
+            android:text="," android:textSize="14sp"
+            style="@style/KbButton.Func" />
     </LinearLayout>
 
     <!-- Function list (shrink-wrapped) -->

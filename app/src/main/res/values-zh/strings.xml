@@ -3,7 +3,7 @@
     <string name="app_name">高级计算器</string>
     <string name="action_settings">设置</string>
 
-    <string name="title_scientific">科学</string>
+    <string name="title_scientific">实数</string>
     <string name="title_matrix">矩阵</string>
     <string name="title_graph_2d">2D 图形</string>
     <string name="title_graph_3d">3D 图形</string>
@@ -60,5 +60,6 @@
     <!-- Compatibility for old fragments -->
     <string name="next">下一步</string>
     <string name="previous">上一步</string>
+    <string name="title_complex">复数</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet.</string>
 </resources>

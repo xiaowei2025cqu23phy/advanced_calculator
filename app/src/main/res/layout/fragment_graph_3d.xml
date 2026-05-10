@@ -103,7 +103,7 @@
         android:paddingHorizontal="6dp"
         android:visibility="gone">
 
-        <TextView android:text="t:" android:textSize="10sp" android:textColor="#888" />
+        <TextView android:text="t:" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center" android:textSize="10sp" android:textColor="#888" />
 
         <EditText android:id="@+id/et_t_min" android:text="0"
             android:layout_width="32dp" android:layout_height="match_parent"
@@ -111,7 +111,7 @@
             android:textColor="@android:color/white" android:background="@null"
             android:inputType="numberDecimal|numberSigned" />
 
-        <TextView android:text="~" android:textSize="10sp" android:textColor="#555" />
+        <TextView android:text="~" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center" android:textSize="10sp" android:textColor="#555" />
 
         <EditText android:id="@+id/et_t_max" android:text="6.283"
             android:layout_width="36dp" android:layout_height="match_parent"
@@ -119,7 +119,7 @@
             android:textColor="@android:color/white" android:background="@null"
             android:inputType="numberDecimal|numberSigned" />
 
-        <TextView android:text="步" android:textSize="10sp" android:textColor="#555" />
+        <TextView android:text="步" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center" android:textSize="10sp" android:textColor="#555" />
 
         <EditText android:id="@+id/et_t_step" android:text="0.02"
             android:layout_width="36dp" android:layout_height="match_parent"

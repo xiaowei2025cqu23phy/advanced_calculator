@@ -23,7 +23,7 @@ import java.util.List;
 public class Graph2DFragment extends Fragment {
 
     private FragmentGraph2dBinding binding;
-    private boolean parametricMode = false;
+    private int plotMode = 0; // 0=y=f(x), 1=parametric, 2=polar
     private EditText focusedInput;
 
     private static final int[] COLORS = {
@@ -63,24 +63,31 @@ public class Graph2DFragment extends Fragment {
         binding.btnAddFunction.setOnClickListener(v -> addFunctionInput());
         binding.btnPlot2d.setOnClickListener(v -> plotAllGraphs());
         binding.btnClearAll.setOnClickListener(v -> clearAllFunctions());
-        binding.btnModeNormal.setOnClickListener(v -> setMode(false));
-        binding.btnModeParam.setOnClickListener(v -> setMode(true));
+        binding.btnModeNormal.setOnClickListener(v -> setMode(0));
+        binding.btnModeParam.setOnClickListener(v -> setMode(1));
+        binding.btnModePolar.setOnClickListener(v -> setMode(2));
+        binding.btnVarX.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append("x"); });
+        binding.btnVarY.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append("y"); });
+        binding.btnVarT.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append("t"); });
+        binding.btnVarTheta.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append("θ"); });
+        binding.btnVarComma.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append(","); });
 
         updateModeButtons();
         addFunctionInput();
     }
 
-    private void setMode(boolean param) {
-        if (parametricMode == param) return;
-        parametricMode = param;
+    private void setMode(int mode) {
+        if (plotMode == mode) return;
+        plotMode = mode;
         updateModeButtons();
-        binding.layoutTRange.setVisibility(param ? View.VISIBLE : View.GONE);
+        binding.layoutTRange.setVisibility(mode != 0 ? View.VISIBLE : View.GONE);
         clearAllFunctions();
     }
 
     private void updateModeButtons() {
-        binding.btnModeNormal.setAlpha(parametricMode ? 0.4f : 1f);
-        binding.btnModeParam.setAlpha(parametricMode ? 1f : 0.4f);
+        binding.btnModeNormal.setAlpha(plotMode == 0 ? 1f : 0.4f);
+        binding.btnModeParam.setAlpha(plotMode == 1 ? 1f : 0.4f);
+        binding.btnModePolar.setAlpha(plotMode == 2 ? 1f : 0.4f);
     }
 
     private void setupChart() {
@@ -93,9 +100,11 @@ public class Graph2DFragment extends Fragment {
         row.setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
         row.setPadding(0, 2, 0, 2);
 
-        if (parametricMode) {
+        if (plotMode == 1) {
             row.addView(makeEditText("x(t)"));
             row.addView(makeEditText("y(t)"));
+        } else if (plotMode == 2) {
+            row.addView(makeEditText("r(θ)"));
         } else {
             row.addView(makeEditText("f(x)"));
         }
@@ -121,7 +130,8 @@ public class Graph2DFragment extends Fragment {
     }
 
     private void plotAllGraphs() {
-        if (parametricMode) plotParametric();
+        if (plotMode == 1) plotParametric();
+        else if (plotMode == 2) plotPolar();
         else plotNormal();
     }
 
@@ -213,6 +223,58 @@ public class Graph2DFragment extends Fragment {
             }
         }
         if (ci == 0) { Toast.makeText(getContext(), "无法绘制", Toast.LENGTH_SHORT).show(); }
+    }
+
+    private void plotPolar() {
+        float tMin, tMax, tStep;
+        try {
+            tMin = Float.parseFloat(binding.etTMin.getText().toString());
+            tMax = Float.parseFloat(binding.etTMax.getText().toString());
+            tStep = Float.parseFloat(binding.etTStep.getText().toString());
+        } catch (NumberFormatException e) {
+            Toast.makeText(getContext(), "θ范围无效", Toast.LENGTH_SHORT).show(); return;
+        }
+        if (tMin >= tMax || tStep <= 0) {
+            Toast.makeText(getContext(), "范围不正确", Toast.LENGTH_SHORT).show(); return;
+        }
+
+        List<String> funcs = new ArrayList<>();
+        for (int i = 0; i < binding.functionsContainer.getChildCount(); i++) {
+            View c = binding.functionsContainer.getChildAt(i);
+            if (c instanceof LinearLayout) {
+                String txt = ((EditText) ((LinearLayout) c).getChildAt(0)).getText().toString().trim();
+                if (!txt.isEmpty()) funcs.add(txt);
+            }
+        }
+        if (funcs.isEmpty()) { Toast.makeText(getContext(), "请添加函数", Toast.LENGTH_SHORT).show(); return; }
+
+        binding.chart2d.clearCurves();
+        int ci = 0;
+        for (String f : funcs) {
+            List<float[]> pts = evalPolar(f, tMin, tMax, tStep);
+            if (!pts.isEmpty()) {
+                binding.chart2d.addCurve(pts, COLORS[ci % COLORS.length], "r" + (ci+1));
+                ci++;
+            }
+        }
+        if (ci == 0) { Toast.makeText(getContext(), "无法绘制", Toast.LENGTH_SHORT).show(); }
+    }
+
+    private List<float[]> evalPolar(String expr, float tMin, float tMax, float tStep) {
+        List<float[]> pts = new ArrayList<>();
+        try {
+            Argument th = new Argument("θ");
+            Expression e = new Expression(expr, th);
+            if (!e.checkSyntax()) return pts;
+            for (double v = tMin; v <= tMax + tStep * 0.5; v += tStep) {
+                th.setArgumentValue(v);
+                double r = e.calculate();
+                if (!Double.isNaN(r) && !Double.isInfinite(r)) {
+                    pts.add(new float[]{(float)(r * Math.cos(v)), (float)(r * Math.sin(v))});
+                }
+            }
+        } catch (Exception ignored) {}
+        return pts;
     }
 
     private List<float[]> evalParam(String xs, String ys, float tMin, float tMax, float tStep) {

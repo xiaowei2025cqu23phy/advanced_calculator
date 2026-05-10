@@ -9,7 +9,11 @@
       "Bash(java -version)",
       "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-22\" ./gradlew assembleDebug)",
       "WebSearch",
-      "WebFetch(domain:mathparser.org)"
+      "WebFetch(domain:mathparser.org)",
+      "Bash(sed -n '44,48p' Graph2DFragment.java)",
+      "Bash(sed -n '80,84p' Graph3DFragment.java)",
+      "Bash(sed -n '35,39p' MatrixFragment.java)",
+      "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-22\" ./gradlew clean assembleDebug)"
     ]
   }
 }

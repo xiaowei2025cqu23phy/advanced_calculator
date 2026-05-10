@@ -68,7 +68,7 @@
     </LinearLayout>
 
     <!-- Number pad (4 rows, always visible) -->
-    <LinearLayout layout_width="match_parent" android:layout_height="34dp"
+    <LinearLayout android:layout_width="match_parent" android:layout_height="34dp"
         android:orientation="horizontal" android:paddingHorizontal="3dp" android:paddingBottom="1dp">
         <Button android:id="@+id/kb_7" android:text="7" style="@style/KbButton.Num" android:textSize="16sp" android:layout_margin="1dp" />
         <Button android:id="@+id/kb_8" android:text="8" style="@style/KbButton.Num" android:textSize="16sp" android:layout_margin="1dp" />
@@ -77,7 +77,7 @@
         <Button android:id="@+id/kb_backspace" android:text="⌫" style="@style/KbButton.Del" android:textSize="14sp" android:layout_margin="1dp" />
     </LinearLayout>
 
-    <LinearLayout layout_width="match_parent" android:layout_height="34dp"
+    <LinearLayout android:layout_width="match_parent" android:layout_height="34dp"
         android:orientation="horizontal" android:paddingHorizontal="3dp" android:paddingBottom="1dp">
         <Button android:id="@+id/kb_4" android:text="4" style="@style/KbButton.Num" android:textSize="16sp" android:layout_margin="1dp" />
         <Button android:id="@+id/kb_5" android:text="5" style="@style/KbButton.Num" android:textSize="16sp" android:layout_margin="1dp" />
@@ -86,7 +86,7 @@
         <Button android:id="@+id/kb_ac" android:text="AC" style="@style/KbButton.AC" android:textSize="11sp" android:layout_margin="1dp" />
     </LinearLayout>
 
-    <LinearLayout layout_width="match_parent" android:layout_height="34dp"
+    <LinearLayout android:layout_width="match_parent" android:layout_height="34dp"
         android:orientation="horizontal" android:paddingHorizontal="3dp" android:paddingBottom="1dp">
         <Button android:id="@+id/kb_1" android:text="1" style="@style/KbButton.Num" android:textSize="16sp" android:layout_margin="1dp" />
         <Button android:id="@+id/kb_2" android:text="2" style="@style/KbButton.Num" android:textSize="16sp" android:layout_margin="1dp" />
@@ -95,7 +95,7 @@
         <Button android:id="@+id/kb_equals" android:text="=" style="@style/KbButton.Eq" android:textSize="18sp" android:layout_margin="1dp" />
     </LinearLayout>
 
-    <LinearLayout layout_width="match_parent" android:layout_height="34dp"
+    <LinearLayout android:layout_width="match_parent" android:layout_height="34dp"
         android:orientation="horizontal" android:paddingHorizontal="3dp" android:paddingBottom="1dp">
         <Button android:id="@+id/kb_0" android:text="0" style="@style/KbButton.Num" android:textSize="16sp" android:layout_margin="1dp" />
         <Button android:id="@+id/kb_dot" android:text="." style="@style/KbButton.Num" android:textSize="18sp" android:layout_margin="1dp" />

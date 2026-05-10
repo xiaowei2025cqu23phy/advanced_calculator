@@ -16,4 +16,8 @@
         android:id="@+id/Graph3DFragment"
         android:icon="@android:drawable/ic_menu_compass"
         android:title="@string/title_graph_3d" />
+    <item
+        android:id="@+id/ComplexFragment"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="@string/title_complex" />
 </menu>

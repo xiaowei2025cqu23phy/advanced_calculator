@@ -38,4 +38,10 @@
         android:name="com.example.myapplication.Graph3DFragment"
         android:label="3D Graphing"
         tools:layout="@layout/fragment_graph_3d" />
+
+    <fragment
+        android:id="@+id/ComplexFragment"
+        android:name="com.example.myapplication.ComplexFragment"
+        android:label="Complex"
+        tools:layout="@layout/fragment_complex" />
 </navigation>
