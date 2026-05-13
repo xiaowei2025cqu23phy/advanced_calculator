@@ -93,6 +93,9 @@ public class Graph2DFragment extends Fragment {
         binding.btnVarT.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append("t"); });
         binding.btnVarTheta.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append("θ"); });
         binding.btnVarComma.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append(","); });
+        binding.btnResetView.setOnClickListener(v -> binding.chart2d.resetBounds());
+        binding.btnPaste.setOnClickListener(v -> pasteFromClipboard());
+        binding.btnSaveImg.setOnClickListener(v -> saveChartImage());
 
         updateModeButtons();
         addFunctionInput();
@@ -244,6 +247,39 @@ public class Graph2DFragment extends Fragment {
         if (inputs.isEmpty()) { Toast.makeText(getContext(), "请添加函数", Toast.LENGTH_SHORT).show(); return; }
 
         viewModel.generatePolar(inputs, tMin, tMax, tStep);
+    }
+
+    private void pasteFromClipboard() {
+        android.content.ClipboardManager cm = (android.content.ClipboardManager)
+            requireContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+        if (cm.hasPrimaryClip() && focusedInput != null) {
+            CharSequence s = cm.getPrimaryClip().getItemAt(0).getText();
+            if (s != null) focusedInput.append(s);
+        }
+    }
+
+    private void saveChartImage() {
+        try {
+            android.graphics.Bitmap bmp = android.graphics.Bitmap.createBitmap(
+                binding.chart2d.getWidth(), binding.chart2d.getHeight(),
+                android.graphics.Bitmap.Config.ARGB_8888);
+            android.graphics.Canvas c = new android.graphics.Canvas(bmp);
+            binding.chart2d.draw(c);
+
+            java.io.File dir = new java.io.File(
+                android.os.Environment.getExternalStoragePublicDirectory(
+                    android.os.Environment.DIRECTORY_PICTURES), "Calculator");
+            if (!dir.exists()) dir.mkdirs();
+            java.io.File file = new java.io.File(dir, "graph_" + System.currentTimeMillis() + ".png");
+            java.io.FileOutputStream out = new java.io.FileOutputStream(file);
+            bmp.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out);
+            out.flush(); out.close();
+            bmp.recycle();
+
+            Toast.makeText(getContext(), "已保存: " + file.getName(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(getContext(), "保存失败", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void clearAllFunctions() {

@@ -16,7 +16,11 @@
       "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-22\" ./gradlew clean assembleDebug)",
       "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-22\" ./gradlew testDebugUnitTest)",
       "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-22\" ./gradlew assembleDebug testDebugUnitTest)",
-      "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-22\" ./gradlew clean assembleDebug testDebugUnitTest)"
+      "Bash(JAVA_HOME=\"/c/Program Files/Java/jdk-22\" ./gradlew clean assembleDebug testDebugUnitTest)",
+      "Bash(sed -n '68,72p' SimpleChartView.java)",
+      "Bash(sed -n '87,91p' SimpleChartView.java)",
+      "Bash(sed -n '236,240p' SimpleChartView.java)",
+      "Bash(sed -n '266,273p' SimpleChartView.java)"
     ]
   }
 }

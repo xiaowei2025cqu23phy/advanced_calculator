@@ -17,6 +17,7 @@
             android:orientation="vertical">
 
             <TextView android:text="复数运算" android:textColor="#AAA"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textSize="12sp" android:layout_marginBottom="4dp" />
 
             <LinearLayout
@@ -74,6 +75,7 @@
 
             <!-- Single complex input for conversion -->
             <TextView android:text="单个复数转换" android:textColor="#AAA"
+                android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:textSize="12sp" android:layout_marginTop="8dp" android:layout_marginBottom="4dp" />
 
             <LinearLayout
@@ -91,9 +93,13 @@
                     android:singleLine="true" />
 
                 <Button android:id="@+id/btn_crect2" android:text="→极坐标"
-                    style="@style/KbButton.Func" android:textSize="10sp" />
+                    style="@style/KbButton.Func" android:textSize="9sp" />
                 <Button android:id="@+id/btn_cpolar2" android:text="→直角"
-                    style="@style/KbButton.Func" android:textSize="10sp" />
+                    style="@style/KbButton.Func" android:textSize="9sp" />
+                <Button android:id="@+id/btn_conj" android:text="conj"
+                    style="@style/KbButton.Func" android:textSize="9sp" />
+                <Button android:id="@+id/btn_arg" android:text="arg"
+                    style="@style/KbButton.Func" android:textSize="9sp" />
             </LinearLayout>
 
             <!-- Result -->

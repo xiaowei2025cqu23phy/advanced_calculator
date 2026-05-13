@@ -70,6 +70,7 @@ public class Graph3DFragment extends Fragment {
         binding.btnVarX.setOnClickListener(v -> appendToInput("x"));
         binding.btnVarY.setOnClickListener(v -> appendToInput("y"));
         binding.btnVarT.setOnClickListener(v -> appendToInput("t"));
+        binding.btnReset3d.setOnClickListener(v -> renderer.setRotation(-25f, 0f));
 
         // Prevent system keyboard
         preventSystemKeyboard(binding.etFunction3d);

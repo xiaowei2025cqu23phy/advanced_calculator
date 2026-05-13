@@ -85,6 +85,10 @@ public class ComplexFragment extends Fragment {
                 viewModel.rectToPolar(binding.etComplexSingle.getText().toString()));
             binding.btnCpolar2.setOnClickListener(v ->
                 viewModel.polarToRect(binding.etComplexSingle.getText().toString()));
+            binding.btnConj.setOnClickListener(v ->
+                viewModel.conjugate(binding.etComplexSingle.getText().toString()));
+            binding.btnArg.setOnClickListener(v ->
+                viewModel.argument(binding.etComplexSingle.getText().toString()));
 
         } catch (Exception e) {
             binding.tvComplexResult.setText("初始化错误: " + e.getClass().getSimpleName());

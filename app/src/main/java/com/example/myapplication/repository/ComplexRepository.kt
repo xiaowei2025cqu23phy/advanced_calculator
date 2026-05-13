@@ -62,6 +62,31 @@ class ComplexRepository {
         }
     }
 
+    /** Compute complex conjugate: conj(a+bi) = a-bi */
+    suspend fun conjugate(z: String): MathResult<String> = withContext(Dispatchers.Default) {
+        if (z.isBlank()) return@withContext MathResult.failure(MathError.invalidExpression("请输入复数"))
+        try {
+            val re = Expression("Re($z)").calculate()
+            val im = Expression("Im($z)").calculate()
+            if (re.isNaN() || im.isNaN())
+                MathResult.failure(MathError.invalidExpression("无法计算共轭"))
+            else
+                MathResult.success("conj($z) = ${fmt(re)}${if (-im >= 0) "+" else ""}${fmt(-im)}i")
+        } catch (ex: Exception) { MathResult.failure(MathError.generic(ex)) }
+    }
+
+    /** Compute complex argument: arg(a+bi) = atan2(b, a) in radians */
+    suspend fun argument(z: String): MathResult<String> = withContext(Dispatchers.Default) {
+        if (z.isBlank()) return@withContext MathResult.failure(MathError.invalidExpression("请输入复数"))
+        try {
+            val arg = Expression("arg($z)").calculate()
+            if (arg.isNaN())
+                MathResult.failure(MathError.invalidExpression("无法计算幅角"))
+            else
+                MathResult.success("arg($z) = ${fmt(arg)} rad (${fmt(arg * 180 / Math.PI)}°)")
+        } catch (ex: Exception) { MathResult.failure(MathError.generic(ex)) }
+    }
+
     private fun fmt(d: Double): String {
         if (d.isNaN() || d.isInfinite()) return d.toString()
         if (d == Math.floor(d) && !d.isInfinite()) return d.toLong().toString()

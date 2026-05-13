@@ -84,7 +84,10 @@ public class MathKeyboardHelper {
     private void wireTabs() {
         for (int i = 0; i < tabBtns.length; i++) {
             final int t = i;
-            if (tabBtns[i] != null) tabBtns[i].setOnClickListener(v -> applyTab(t));
+            if (tabBtns[i] != null) tabBtns[i].setOnClickListener(v -> {
+                v.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP);
+                applyTab(t);
+            });
         }
     }
 
@@ -96,7 +99,10 @@ public class MathKeyboardHelper {
                 funcBtns[i].setVisibility(View.VISIBLE);
                 funcBtns[i].setText(funcs[i][0]);
                 final String insert = funcs[i][1];
-                funcBtns[i].setOnClickListener(v -> target.append(insert));
+                funcBtns[i].setOnClickListener(v -> {
+                    v.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP);
+                    target.append(insert);
+                });
             } else {
                 funcBtns[i].setVisibility(View.GONE);
             }
@@ -127,7 +133,10 @@ public class MathKeyboardHelper {
 
     private void wire(int id, final String text) {
         Button btn = root.findViewById(id);
-        if (btn != null) btn.setOnClickListener(v -> target.append(text));
+        if (btn != null) btn.setOnClickListener(v -> {
+            btn.performHapticFeedback(android.view.HapticFeedbackConstants.KEYBOARD_TAP);
+            target.append(text);
+        });
     }
 
     public Button getBackspaceButton() { return root.findViewById(R.id.kb_backspace); }

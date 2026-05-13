@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.ViewConfiguration;
@@ -13,6 +14,8 @@ import android.widget.OverScroller;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.core.view.ViewCompat;
 
 /**
  * 2D chart with fling-to-pan inertia.
@@ -26,6 +29,7 @@ public class SimpleChartView extends View {
     private final List<Paint> curvePaints = new ArrayList<>();
     private final OverScroller scroller;
     private final int minFlingVelocity;
+    private final List<Path> curvePaths = new ArrayList<>();  // reusable path objects
 
     private float xMin = -10, xMax = 10;
     private float yMin = -10, yMax = 10;
@@ -33,8 +37,10 @@ public class SimpleChartView extends View {
 
     // Touch
     private VelocityTracker velocityTracker;
+    private final ScaleGestureDetector scaleDetector;
     private float lastX, lastY;
-    private boolean touched = false;
+    private boolean touching = false;
+    private float scaleFactor = 1f;
 
     public SimpleChartView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -53,22 +59,52 @@ public class SimpleChartView extends View {
         labelPaint.setAntiAlias(true);
 
         setBackgroundColor(0xFF121214);
+
+        scaleDetector = new ScaleGestureDetector(context, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            @Override
+            public boolean onScale(ScaleGestureDetector detector) {
+                scaleFactor = detector.getScaleFactor();
+                float fx = detector.getFocusX();
+                float fy = detector.getFocusY();
+
+                // Convert focus point to data coordinates before zoom
+                float w = getWidth(), h = getHeight();
+                float pad = 50;
+                float plotW = w - pad * 2, plotH = h - pad * 2;
+                if (plotW <= 0 || plotH <= 0) return true;
+
+                float cx = xMin + (fx - pad) / plotW * (xMax - xMin);
+                float cy = yMax - (fy - pad) / plotH * (yMax - yMin);
+
+                float newRangeX = (xMax - xMin) / scaleFactor;
+                float newRangeY = (yMax - yMin) / scaleFactor;
+
+                xMin = cx - newRangeX * (fx - pad) / plotW;
+                xMax = cx + newRangeX * (1 - (fx - pad) / plotW);
+                yMin = cy - newRangeY * (1 - (fy - pad) / plotH);
+                yMax = cy + newRangeY * (fy - pad) / plotH;
+
+                ViewCompat.postInvalidateOnAnimation(SimpleChartView.this);
+                return true;
+            }
+        });
     }
 
     public void setBounds(float xMn, float xMx, float yMn, float yMx) {
         xMin = xMn; xMax = xMx; yMin = yMn; yMax = yMx;
         baseXMin = xMn; baseXMax = xMx; baseYMin = yMn; baseYMax = yMx;
-        postInvalidate();
+        ViewCompat.postInvalidateOnAnimation(this);
     }
 
     public void resetBounds() {
         xMin = baseXMin; xMax = baseXMax;
         yMin = baseYMin; yMax = baseYMax;
-        postInvalidate();
+        ViewCompat.postInvalidateOnAnimation(this);
     }
 
     public void addCurve(List<float[]> points, int color, String label) {
         curves.add(new CurveData(points, color, label));
+        curvePaths.add(new Path());  // placeholder, rebuilt on next draw
         Paint p = new Paint();
         p.setColor(color); p.setStrokeWidth(3);
         p.setStyle(Paint.Style.STROKE); p.setAntiAlias(true);
@@ -81,10 +117,13 @@ public class SimpleChartView extends View {
             yMin = mn - pad; yMax = mx + pad;
             baseYMin = yMin; baseYMax = yMax;
         }
-        postInvalidate();
+        ViewCompat.postInvalidateOnAnimation(this);
     }
 
-    public void clearCurves() { curves.clear(); curvePaints.clear(); postInvalidate(); }
+    public void clearCurves() {
+        curves.clear(); curvePaints.clear(); curvePaths.clear();
+        ViewCompat.postInvalidateOnAnimation(this);
+    }
 
     // ── Fling via OverScroller ──
 
@@ -150,11 +189,11 @@ public class SimpleChartView extends View {
             c.drawText(formatNum(v), 4, py + 4, labelPaint);
         }
 
-        // Curves
+        // Curves (reuse Path objects, rebuild every frame to stay in sync with bounds)
         for (int ci = 0; ci < curves.size(); ci++) {
             CurveData cd = curves.get(ci);
-            Paint lp = ci < curvePaints.size() ? curvePaints.get(ci) : curvePaints.get(0);
-            Path path = new Path();
+            Path path = ci < curvePaths.size() ? curvePaths.get(ci) : new Path();
+            path.rewind();
             boolean first = true;
             for (float[] pt : cd.points) {
                 float px = pad + (pt[0] - xMin) * scaleX;
@@ -162,6 +201,8 @@ public class SimpleChartView extends View {
                 if (first) { path.moveTo(px, py2); first = false; }
                 else path.lineTo(px, py2);
             }
+            if (ci >= curvePaths.size()) curvePaths.add(path);
+            Paint lp = ci < curvePaints.size() ? curvePaints.get(ci) : curvePaints.get(0);
             c.drawPath(path, lp);
             if (!cd.points.isEmpty()) {
                 float[] last = cd.points.get(cd.points.size() - 1);
@@ -176,14 +217,25 @@ public class SimpleChartView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+        // Let the scale detector check for pinch
+        scaleDetector.onTouchEvent(e);
+
         if (velocityTracker == null) velocityTracker = VelocityTracker.obtain();
         velocityTracker.addMovement(e);
+
+        // If pinch is active, don't pan
+        if (scaleDetector.isInProgress()) {
+            if (e.getAction() == MotionEvent.ACTION_UP) {
+                if (velocityTracker != null) { velocityTracker.recycle(); velocityTracker = null; }
+            }
+            return true;
+        }
 
         switch (e.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 scroller.forceFinished(true);
                 lastX = e.getX(); lastY = e.getY();
-                touched = true;
+                touching= true;
                 return true;
 
             case MotionEvent.ACTION_MOVE:
@@ -192,7 +244,7 @@ public class SimpleChartView extends View {
                 xMin += dx; xMax += dx;
                 yMin += dy; yMax += dy;
                 lastX = e.getX(); lastY = e.getY();
-                postInvalidate();
+                ViewCompat.postInvalidateOnAnimation(this);
                 return true;
 
             case MotionEvent.ACTION_UP:
@@ -213,10 +265,10 @@ public class SimpleChartView extends View {
                         Integer.MIN_VALUE, Integer.MAX_VALUE
                     );
                     postInvalidateOnAnimation();
-                } else if (touched && Math.abs(e.getX() - lastX) < 5 && Math.abs(e.getY() - lastY) < 5) {
+                } else if (touching&& Math.abs(e.getX() - lastX) < 5 && Math.abs(e.getY() - lastY) < 5) {
                     resetBounds();  // tap → reset
                 }
-                touched = false;
+                touching= false;
                 if (velocityTracker != null) { velocityTracker.recycle(); velocityTracker = null; }
                 return true;
         }

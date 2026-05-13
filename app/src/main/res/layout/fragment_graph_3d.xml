@@ -40,6 +40,11 @@
             android:layout_width="32dp" android:layout_height="match_parent"
             android:text="t" android:textSize="12sp"
             style="@style/KbButton.Func" android:layout_marginHorizontal="1dp" />
+
+        <Button android:id="@+id/btn_reset_3d"
+            android:layout_width="32dp" android:layout_height="match_parent"
+            android:text="⟲" android:textSize="12sp"
+            style="@style/KbButton.Ans" android:layout_marginStart="2dp" />
     </LinearLayout>
 
     <!-- Surface mode input -->

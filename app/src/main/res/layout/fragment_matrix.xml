@@ -55,6 +55,25 @@
                 android:textSize="14sp"
                 android:minLines="2" />
 
+            <!-- Matrix separator buttons -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="4dp">
+
+                <TextView android:text="分隔:" android:textSize="10sp" android:textColor="#888"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content" />
+
+                <Button android:id="@+id/btn_m_sep_comma" android:text=","
+                    style="@style/KbButton.Func" android:textSize="14sp" />
+                <Button android:id="@+id/btn_m_sep_space" android:text="空格"
+                    style="@style/KbButton.Func" android:textSize="10sp" />
+                <Button android:id="@+id/btn_m_sep_nl" android:text="换行"
+                    style="@style/KbButton.Func" android:textSize="10sp" />
+            </LinearLayout>
+
             <!-- Single matrix ops -->
             <TextView
                 android:layout_width="wrap_content"

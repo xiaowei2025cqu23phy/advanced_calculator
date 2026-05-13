@@ -73,6 +73,11 @@ public class MatrixFragment extends Fragment {
         binding.etMatrixB.setShowSoftInputOnFocus(false);
         binding.etMatrixB.setOnTouchListener((v, event) -> { v.onTouchEvent(event); return true; });
 
+        // Matrix separator buttons
+        binding.btnMSepComma.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append(","); });
+        binding.btnMSepSpace.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append(" "); });
+        binding.btnMSepNl.setOnClickListener(v -> { if (focusedInput != null) focusedInput.append("\n"); });
+
         // Operation buttons → delegate to ViewModel
         binding.btnDeterminant.setOnClickListener(v -> calc(MatrixViewModel.Op.DET));
         binding.btnInverse.setOnClickListener(v -> calc(MatrixViewModel.Op.INV));

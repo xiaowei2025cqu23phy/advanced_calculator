@@ -108,7 +108,23 @@ public class ScientificFragment extends Fragment {
             binding.btnAns.setOnLongClickListener(v -> { showHistory(); return true; });
             binding.btnComplexI.setOnClickListener(v -> binding.etExpression.append("i"));
             binding.btnPi.setOnClickListener(v -> binding.etExpression.append("pi"));
-            binding.btnE.setOnClickListener(v -> binding.etExpression.append("e"));
+            binding.btnCopy.setOnClickListener(v -> {
+                String txt = binding.etExpression.getText().toString();
+                if (!txt.isEmpty()) {
+                    android.content.ClipboardManager cm = (android.content.ClipboardManager)
+                        requireContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                    cm.setPrimaryClip(android.content.ClipData.newPlainText("expr", txt));
+                    binding.tvResult.setText("已复制");
+                }
+            });
+            binding.btnPaste.setOnClickListener(v -> {
+                android.content.ClipboardManager cm = (android.content.ClipboardManager)
+                    requireContext().getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                if (cm.hasPrimaryClip()) {
+                    CharSequence pasted = cm.getPrimaryClip().getItemAt(0).getText();
+                    if (pasted != null) binding.etExpression.append(pasted);
+                }
+            });
 
         } catch (Exception e) {
             binding.tvResult.setText("初始化错误: " + e.getClass().getSimpleName());

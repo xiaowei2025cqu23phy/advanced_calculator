@@ -56,4 +56,30 @@ class ComplexViewModel : ViewModel() {
             _isLoading.value = false
         }
     }
+
+    fun conjugate(z: String) {
+        if (z.isBlank()) {
+            _result.value = MathResult.failure(
+                com.example.myapplication.model.MathError.invalidExpression("请输入复数"))
+            return
+        }
+        _isLoading.value = true
+        viewModelScope.launch {
+            _result.value = repository.conjugate(z)
+            _isLoading.value = false
+        }
+    }
+
+    fun argument(z: String) {
+        if (z.isBlank()) {
+            _result.value = MathResult.failure(
+                com.example.myapplication.model.MathError.invalidExpression("请输入复数"))
+            return
+        }
+        _isLoading.value = true
+        viewModelScope.launch {
+            _result.value = repository.argument(z)
+            _isLoading.value = false
+        }
+    }
 }

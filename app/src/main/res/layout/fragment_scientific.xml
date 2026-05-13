@@ -109,12 +109,21 @@
             style="@style/KbButton.Func" />
 
         <Button
-            android:id="@+id/btn_e"
+            android:id="@+id/btn_copy"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="e"
-            android:textSize="14sp"
+            android:text="复制"
+            android:textSize="10sp"
+            style="@style/KbButton.Func" />
+
+        <Button
+            android:id="@+id/btn_paste"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="粘贴"
+            android:textSize="10sp"
             style="@style/KbButton.Func" />
 
     </LinearLayout>
