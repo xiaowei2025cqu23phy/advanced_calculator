@@ -9,64 +9,72 @@
     <EditText
         android:id="@+id/et_expression"
         android:layout_width="match_parent"
-        android:layout_height="44dp"
+        android:layout_height="64dp"
         android:gravity="center_vertical|end"
         android:hint="@string/expression_hint"
         android:inputType="none"
         android:textAlignment="viewEnd"
-        android:textSize="20sp"
+        android:textSize="28sp"
         android:textColor="@android:color/white"
         android:textColorHint="#555555"
-        android:paddingHorizontal="12dp"
+        android:paddingHorizontal="16dp"
         android:background="@null"
         android:singleLine="true" />
 
-    <!-- Formula preview (LaTeX-like) -->
-    <com.example.myapplication.LatexPreviewView
-        android:id="@+id/latex_preview"
-        android:layout_width="match_parent"
-        android:layout_height="36dp"
-        android:paddingHorizontal="12dp"
-        android:paddingTop="4dp" />
-
-    <!-- Result + mode indicator -->
+    <!-- Result + mode indicator Card -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="26dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:paddingHorizontal="8dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="#2C2C2E"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginVertical="4dp"
+        android:padding="8dp"
+        android:elevation="2dp">
 
-        <TextView
-            android:id="@+id/tv_mode_indicator"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="11sp"
-            android:textStyle="bold"
-            android:paddingHorizontal="6dp"
-            android:paddingVertical="2dp"
-            android:textColor="#FF9F0A"
-            android:background="#332C2C2E" />
+        <!-- Formula preview (LaTeX-like) -->
+        <com.example.myapplication.LatexPreviewView
+            android:id="@+id/latex_preview"
+            android:layout_width="match_parent"
+            android:layout_height="40dp" />
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/tv_result"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="end"
-            android:textSize="15sp"
-            android:textColor="#FF9F0A"
-            android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tv_mode_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="2dp"
+                android:textColor="#FF9F0A"
+                android:background="#20FF9F0A" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tv_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:textSize="22sp"
+                android:textColor="#FF9F0A"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
     <!-- Toolbar: DEG / Ans / i / π / e -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="44dp"
         android:orientation="horizontal"
         android:paddingHorizontal="6dp"
         android:paddingBottom="2dp"

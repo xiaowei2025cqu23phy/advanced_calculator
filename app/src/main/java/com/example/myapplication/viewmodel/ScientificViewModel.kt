@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.myapplication.model.MathResult
 import com.example.myapplication.repository.CalculationRepository
@@ -24,16 +25,8 @@ class ScientificViewModel(application: Application) : AndroidViewModel(applicati
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?> = _errorMessage
 
-    private val _history = MutableLiveData<List<HistoryRepository.Entry>>()
-    val history: LiveData<List<HistoryRepository.Entry>> = _history
-
-    init {
-        refreshHistory()
-    }
-
-    private fun refreshHistory() {
-        _history.value = historyRepo.getAll()
-    }
+    // Observe Room history as LiveData via Flow
+    val history = historyRepo.getAllFlow().asLiveData()
 
     fun calculate(expression: String, degreeMode: Boolean) {
         if (expression.isBlank()) return
@@ -46,7 +39,6 @@ class ScientificViewModel(application: Application) : AndroidViewModel(applicati
             if (res.isSuccess) {
                 val formatted = formatResult(res)
                 historyRepo.save(expression, formatted, degreeMode)
-                refreshHistory()
             } else {
                 _errorMessage.value = res.error?.userMessage
             }
@@ -55,14 +47,14 @@ class ScientificViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun clearHistory() {
-        historyRepo.clearAll()
-        refreshHistory()
+        viewModelScope.launch {
+            historyRepo.clearAll()
+        }
     }
 
     fun formatResult(result: MathResult<Double>): String {
-        if (!result.isSuccess) return ""
-        val v = result.data
+        val v = result.data ?: return ""
         return if (v == Math.floor(v) && !v.isInfinite()) v.toLong().toString()
-        else v.toString()
+        else "%.8g".format(v).replace(Regex("""\.?0+$"""), "") // Concise scientific format
     }
 }
