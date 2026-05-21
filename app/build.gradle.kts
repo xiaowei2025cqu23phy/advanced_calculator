@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -47,12 +48,21 @@ dependencies {
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.lifecycle.livedata.ktx)
+
+    // Room
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     // Scientific Calculations
     implementation(libs.mxparser)
 
     // Matrix Operations
     implementation(libs.ejml.all)
+
+    // 2D Plotting
+    implementation(libs.mpandroidchart)
 
     testImplementation(libs.junit)
     testImplementation(libs.kotlinx.coroutines.test)

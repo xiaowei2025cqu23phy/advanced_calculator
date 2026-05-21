@@ -67,6 +67,10 @@ public class Graph3DRenderer implements GLSurfaceView.Renderer {
 
     private float rotX = -25f, rotY = 0f;
 
+    public void shutdown() {
+        executor.shutdownNow();
+    }
+
     public void setFunction(String expr) {
         functionExpr = expr;
         curveMode = false;
