@@ -9,10 +9,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.databinding.FragmentMatrixBinding
 import com.example.myapplication.viewmodel.MatrixViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * UI-only layer. Matrix operations delegated to MatrixViewModel + MatrixRepository.
  */
+@AndroidEntryPoint
 class MatrixFragment : Fragment() {
 
     private var _binding: FragmentMatrixBinding? = null

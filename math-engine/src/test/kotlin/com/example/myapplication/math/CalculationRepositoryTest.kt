@@ -1,7 +1,7 @@
-package com.example.myapplication
+package com.example.myapplication.math
 
-import com.example.myapplication.model.ErrorType
-import com.example.myapplication.repository.CalculationRepository
+import com.example.myapplication.math.model.ErrorType
+import com.example.myapplication.math.CalculationRepository
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.*
 import org.junit.Before

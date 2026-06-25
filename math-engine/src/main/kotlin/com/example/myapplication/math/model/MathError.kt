@@ -1,4 +1,4 @@
-package com.example.myapplication.model
+package com.example.myapplication.math.model
 
 /**
  * Typed mathematical error with user-facing message.

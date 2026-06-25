@@ -1,15 +1,18 @@
-package com.example.myapplication.repository
+package com.example.myapplication.math
 
-import com.example.myapplication.model.MathError
-import com.example.myapplication.model.MathResult
+import com.example.myapplication.math.model.MathError
+import com.example.myapplication.math.model.MathResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.mariuszgromada.math.mxparser.Expression
+import org.matheclipse.core.eval.ExprEvaluator
 
 /**
- * Optimized calculation repository.
+ * Optimized calculation repository with Symbolic Computation support.
  */
 class CalculationRepository {
+
+    private val symja = ExprEvaluator()
 
     suspend fun evaluate(expression: String, degreeMode: Boolean): MathResult<Double> =
         withContext(Dispatchers.Default) {
@@ -19,10 +22,6 @@ class CalculationRepository {
             try {
                 val normalizedExpr = normalize(expression, degreeMode)
                 val e = Expression(normalizedExpr)
-                
-                // Add common constants if needed
-                // e.addArguments(...) 
-                
                 val result = e.calculate()
 
                 if (e.checkSyntax()) {
@@ -40,8 +39,23 @@ class CalculationRepository {
             }
         }
 
+    fun simplify(expression: String): String {
+        return try {
+            symja.evaluate("Simplify($expression)").toString()
+        } catch (e: Exception) {
+            "无法简化"
+        }
+    }
+
+    fun differentiate(expression: String, variable: String = "x"): String {
+        return try {
+            symja.evaluate("D($expression, $variable)").toString()
+        } catch (e: Exception) {
+            "无法求导"
+        }
+    }
+
     private fun normalize(expr: String, degreeMode: Boolean): String {
-        // Basic symbol mapping
         var s = expr.replace("×", "*")
                     .replace("÷", "/")
                     .replace("−", "-")
@@ -49,14 +63,10 @@ class CalculationRepository {
                     .replace("√", "sqrt")
 
         if (degreeMode) {
-            // More robust degree conversion: only replace function calls with (
-            // Using a word boundary to avoid replacing things like "asin" when we want "sin"
             val functions = listOf("sin", "cos", "tan", "sec", "csc", "cot")
             functions.forEach { func ->
                 s = s.replace(Regex("""\b$func\s*\("""), "$func(pi/180*")
             }
-            
-            // Inverse functions: result is in radians, so convert back to degrees
             val invFunctions = listOf("asin", "acos", "atan", "asec", "acsc", "acot")
             invFunctions.forEach { func ->
                 s = s.replace(Regex("""\b$func\s*\("""), "180/pi*$func(")

@@ -1,5 +1,6 @@
 package com.example.myapplication.renderer
 
+import com.example.myapplication.math.SurfaceMeshGenerator
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer

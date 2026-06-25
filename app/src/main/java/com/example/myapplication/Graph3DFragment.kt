@@ -12,10 +12,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.myapplication.databinding.FragmentGraph3dBinding
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Modernized 3D Graph Fragment in Kotlin.
  */
+@AndroidEntryPoint
 class Graph3DFragment : Fragment() {
 
     private var _binding: FragmentGraph3dBinding? = null

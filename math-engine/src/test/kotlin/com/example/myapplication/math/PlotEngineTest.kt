@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.myapplication.math
 
 import org.junit.Assert.*
 import org.junit.Test

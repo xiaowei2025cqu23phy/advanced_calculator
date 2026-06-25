@@ -10,10 +10,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.databinding.FragmentComplexBinding
 import com.example.myapplication.viewmodel.ComplexViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * UI-only layer. Complex operations delegated to ComplexViewModel + ComplexRepository.
  */
+@AndroidEntryPoint
 class ComplexFragment : Fragment() {
 
     private var _binding: FragmentComplexBinding? = null

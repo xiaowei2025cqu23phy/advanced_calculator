@@ -61,5 +61,6 @@
     <string name="next">Next</string>
     <string name="previous">Previous</string>
     <string name="title_complex">Complex</string>
+    <string name="title_unit">Unit Converter</string>
     <string name="lorem_ipsum">Lorem ipsum dolor sit amet.</string>
 </resources>

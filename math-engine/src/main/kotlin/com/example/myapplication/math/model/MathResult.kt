@@ -1,4 +1,4 @@
-package com.example.myapplication.model
+package com.example.myapplication.math.model
 
 /**
  * Unified result type for all mathematical operations.

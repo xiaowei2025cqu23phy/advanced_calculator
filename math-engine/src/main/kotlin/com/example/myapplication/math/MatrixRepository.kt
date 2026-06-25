@@ -1,7 +1,7 @@
-package com.example.myapplication.repository
+package com.example.myapplication.math
 
-import com.example.myapplication.model.MathError
-import com.example.myapplication.model.MathResult
+import com.example.myapplication.math.model.MathError
+import com.example.myapplication.math.model.MathResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.ejml.simple.SimpleMatrix

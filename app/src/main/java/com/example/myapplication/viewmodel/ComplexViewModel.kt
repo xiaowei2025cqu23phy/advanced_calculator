@@ -4,13 +4,17 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.myapplication.model.MathResult
-import com.example.myapplication.repository.ComplexRepository
+import com.example.myapplication.math.ComplexRepository
+import com.example.myapplication.math.model.MathError
+import com.example.myapplication.math.model.MathResult
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ComplexViewModel : ViewModel() {
-
-    private val repository = ComplexRepository()
+@HiltViewModel
+class ComplexViewModel @Inject constructor(
+    private val repository: ComplexRepository
+) : ViewModel() {
 
     private val _result = MutableLiveData<MathResult<String>>()
     val result: LiveData<MathResult<String>> = _result
@@ -20,8 +24,7 @@ class ComplexViewModel : ViewModel() {
 
     fun calculate(a: String, b: String, op: String) {
         if (a.isBlank() || b.isBlank()) {
-            _result.value = MathResult.failure(
-                com.example.myapplication.model.MathError.invalidExpression("请输入两个复数"))
+            _result.value = MathResult.failure(MathError.invalidExpression("请输入两个复数"))
             return
         }
         _isLoading.value = true
@@ -33,8 +36,7 @@ class ComplexViewModel : ViewModel() {
 
     fun rectToPolar(z: String) {
         if (z.isBlank()) {
-            _result.value = MathResult.failure(
-                com.example.myapplication.model.MathError.invalidExpression("请输入复数"))
+            _result.value = MathResult.failure(MathError.invalidExpression("请输入复数"))
             return
         }
         _isLoading.value = true
@@ -46,8 +48,7 @@ class ComplexViewModel : ViewModel() {
 
     fun polarToRect(input: String) {
         if (input.isBlank()) {
-            _result.value = MathResult.failure(
-                com.example.myapplication.model.MathError.invalidExpression("请输入模与辐角"))
+            _result.value = MathResult.failure(MathError.invalidExpression("请输入模与辐角"))
             return
         }
         _isLoading.value = true
@@ -59,8 +60,7 @@ class ComplexViewModel : ViewModel() {
 
     fun conjugate(z: String) {
         if (z.isBlank()) {
-            _result.value = MathResult.failure(
-                com.example.myapplication.model.MathError.invalidExpression("请输入复数"))
+            _result.value = MathResult.failure(MathError.invalidExpression("请输入复数"))
             return
         }
         _isLoading.value = true
@@ -72,8 +72,7 @@ class ComplexViewModel : ViewModel() {
 
     fun argument(z: String) {
         if (z.isBlank()) {
-            _result.value = MathResult.failure(
-                com.example.myapplication.model.MathError.invalidExpression("请输入复数"))
+            _result.value = MathResult.failure(MathError.invalidExpression("请输入复数"))
             return
         }
         _isLoading.value = true

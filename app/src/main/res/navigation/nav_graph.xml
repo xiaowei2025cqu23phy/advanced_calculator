@@ -44,4 +44,9 @@
         android:name="com.example.myapplication.ComplexFragment"
         android:label="Complex"
         tools:layout="@layout/fragment_complex" />
+
+    <fragment
+        android:id="@+id/UnitFragment"
+        android:name="com.example.myapplication.UnitFragment"
+        android:label="Unit Converter" />
 </navigation>

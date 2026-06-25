@@ -1,4 +1,4 @@
-package com.example.myapplication.model
+package com.example.myapplication.math.model
 
 enum class ErrorType {
     DIVISION_BY_ZERO,

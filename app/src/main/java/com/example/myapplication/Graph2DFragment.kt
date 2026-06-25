@@ -15,12 +15,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.myapplication.databinding.FragmentGraph2dBinding
 import com.example.myapplication.viewmodel.GraphViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
 
 /**
  * UI-only layer. 2D plotting delegated to GraphViewModel → PlotEngine (async).
  */
+@AndroidEntryPoint
 class Graph2DFragment : Fragment() {
 
     private var _binding: FragmentGraph2dBinding? = null

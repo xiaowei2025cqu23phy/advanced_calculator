@@ -1,4 +1,4 @@
-package com.example.myapplication.renderer
+package com.example.myapplication.math
 
 import org.mariuszgromada.math.mxparser.Argument
 import org.mariuszgromada.math.mxparser.Expression
@@ -10,27 +10,26 @@ import kotlin.math.min
 
 /**
  * Generates a 3D surface mesh for z = f(x, y) over a grid.
- * Output: vertex buffer (interleaved with colors via jet colormap).
  */
 class SurfaceMeshGenerator {
 
     companion object {
-        const val GRID_SIZE = 64
         const val RANGE = 3.0f
     }
 
     class MeshResult(
         val vertexBuffer: FloatBuffer,
         val colorBuffer: FloatBuffer,
-        val vertexCount: Int
+        val vertexCount: Int,
+        val gridSize: Int
     )
 
-    fun generate(functionExpr: String): MeshResult {
+    fun generate(functionExpr: String, gridSize: Int = 64): MeshResult {
         val xArg = Argument("x")
         val yArg = Argument("y")
         val expr = Expression(functionExpr, xArg, yArg)
 
-        val n = GRID_SIZE
+        val n = gridSize
         val step = 2 * RANGE / (n - 1)
 
         val zValues = Array(n) { FloatArray(n) }
@@ -72,7 +71,7 @@ class SurfaceMeshGenerator {
             }
         }
 
-        return MeshResult(makeBuffer(verts), makeBuffer(cols), vc)
+        return MeshResult(makeBuffer(verts), makeBuffer(cols), vc, n)
     }
 
     private fun makeBuffer(data: FloatArray): FloatBuffer {
@@ -87,24 +86,12 @@ class SurfaceMeshGenerator {
         var g: Float
         var b: Float
         when {
-            t < 0.125f -> {
-                r = 0f; g = 0f; b = 0.5f + t * 4f
-            }
-            t < 0.375f -> {
-                r = 0f; g = (t - 0.125f) * 4f; b = 1f
-            }
-            t < 0.5f -> {
-                r = 0f; g = 1f; b = 1 - (t - 0.375f) * 4f
-            }
-            t < 0.625f -> {
-                r = (t - 0.5f) * 4f; g = 1f; b = 0f
-            }
-            t < 0.875f -> {
-                r = 1f; g = 1 - (t - 0.625f) * 4f; b = 0f
-            }
-            else -> {
-                r = 1 - (t - 0.875f) * 4f; g = 0f; b = 0f
-            }
+            t < 0.125f -> { r = 0f; g = 0f; b = 0.5f + t * 4f }
+            t < 0.375f -> { r = 0f; g = (t - 0.125f) * 4f; b = 1f }
+            t < 0.5f -> { r = 0f; g = 1f; b = 1 - (t - 0.375f) * 4f }
+            t < 0.625f -> { r = (t - 0.5f) * 4f; g = 1f; b = 0f }
+            t < 0.875f -> { r = 1f; g = 1 - (t - 0.625f) * 4f; b = 0f }
+            else -> { r = 1 - (t - 0.875f) * 4f; g = 0f; b = 0f }
         }
         out[off] = clamp(r)
         out[off + 1] = clamp(g)

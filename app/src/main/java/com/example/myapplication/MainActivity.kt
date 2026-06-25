@@ -9,7 +9,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupWithNavController
 import com.example.myapplication.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -35,7 +37,8 @@ class MainActivity : AppCompatActivity() {
                     R.id.MatrixFragment,
                     R.id.Graph2DFragment,
                     R.id.Graph3DFragment,
-                    R.id.ComplexFragment
+                    R.id.ComplexFragment,
+                    R.id.UnitFragment
                 )
             )
             NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)

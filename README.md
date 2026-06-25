@@ -1,52 +1,42 @@
-# Advanced Calculator (高级计算器)
+# Advanced Calculator (Pro Edition)
 
-一款功能强大的 Android 计算器应用，采用现代 Android 开发技术栈，旨在为学生、工程师和科研人员提供全面的数学计算与可视化工具。
+一款采用工业级架构重构的高性能 Android 计算器应用。本项目不仅支持基础和科学计算，还集成了符号计算引擎、高阶矩阵运算逻辑以及硬件加速的 2D/3D 图形渲染。
+
+## 🚀 核心架构演进
+
+### 1. 模块化架构 (Multi-module Project)
+- **`:app`**: 现代化的 UI 模块。采用了 **Jetpack Compose** 与传统 View 系统的混合架构，确保了 UI 的灵活性与响应速度。
+- **`:math-engine`**: 独立的纯 Kotlin 数学核心模块。封装了 **mXparser** (数值计算)、**Symja** (符号计算) 以及 **EJML** (高性能矩阵运算)，实现了计算逻辑与 UI 层的彻底解耦。
+
+### 2. 现代化技术栈
+- **依赖注入 (Hilt)**: 全面引入 **Dagger Hilt** 负责全局单例（如数据库、偏好设置）及 Repository 的生命周期管理。
+- **Jetpack Compose**: 科学计算与单位换算模块已全面迁移至 Compose 声明式 UI，带来更流畅的交互体验。
+- **Kotlin Flow & Coroutines**: 异步任务（如复杂的图形采样、符号推导）完全基于协程处理，UI 刷新采用 Flow/StateFlow。
+- **Room Persistence**: 用户的计算历史记录持久化存储，支持自动清理过期数据。
 
 ## 🌟 核心功能
 
-### 1. 科学计算 (Scientific)
-- **实时渲染**：采用 LaTeX 技术实时预览复杂的数学公式。
-- **现代化自定义键盘**：内置完整数学符号键盘，支持高阶函数输入，具备震动反馈和布局折叠功能。
-- **模式管理**：支持角度 (DEG) 与弧度 (RAD) 模式切换，并自动保存用户偏好。
-- **持久化历史回溯**：基于 Room 数据库的计算记录存储，支持长按管理和快速复用，即使应用重启也不会丢失。
+- **符号计算 (Symbolic Computation)**: 依托 Symja 引擎，支持表达式的 **自动简化**、**解析求导** 及因式分解。
+- **2D/3D 科学绘图**: 
+  - **2D**: 支持显函数、参数方程、极坐标，具备 Pinch-to-zoom 缩放效果。
+  - **3D**: 基于 OpenGL ES 渲染引擎，支持 $z=f(x,y)$ 曲面及空间参数曲线。
+- **矩阵实验室**: 支持行列式、逆矩阵、转置、迹及矩阵四则运算。
+- **单位换算系统**: 预置长度、质量、温度等多维度转换逻辑，由 Compose 驱动。
 
-### 2. 2D 绘图 (2D Graphing)
-- **多模式绘图**：支持显函数 $y=f(x)$、参数方程 $(x(t), y(t))$ 和极坐标方程 $r=f(\theta)$。
-- **动态交互**：支持手势缩放 (Pinch-to-zoom) 和平移 (Pan)，带惯性滑动效果。
-- **多图层对比**：支持在同一坐标系下绘制多个函数。
-- **图像导出**：一键将生成的函数图像保存至系统相册。
+## 🛠 开发环境
+- **IDE**: Android Studio Ladybug+
+- **Gradle**: 9.0 (Version Catalog)
+- **Language**: 100% Kotlin
+- **JDK**: Java 11
 
-### 3. 3D 绘图 (3D Graphing)
-- **硬件加速**：基于 OpenGL ES 2.0 的 3D 渲染引擎，计算逻辑在后台线程执行。
-- **曲面与曲线**：支持三维曲面 $z=f(x,y)$ 和空间参数曲线。
-- **全向观察**：通过触摸手势实现 360 度视角旋转。
-
-### 4. 矩阵运算 (Matrix)
-- **全面算法**：支持矩阵加减乘、求逆、行列式 (Det)、转置 (Trans) 和迹 (Trace)。
-- **高性能解析**：基于 EJML 库实现高效矩阵运算。
-- **灵活输入**：智能识别空格、逗号和换行作为分隔符。
-
-### 5. 复数处理 (Complex)
-- **基础运算**：支持复数的四则运算。
-- **坐标转换**：代数形式 (a+bi) 与极坐标形式 ($r\angle\theta$) 的快速转换。
-- **特征计算**：支持求共轭 (Conj) 和辐角 (Arg)。
-
-## 🛠 技术实现
-
-- **开发语言**: 100% Kotlin
-- **架构**: MVVM (ViewModel + LiveData + Repository)
-- **数据存储**: Room Database (历史记录), SharedPreferences (用户设置)
-- **异步处理**: Kotlin Coroutines
-- **UI 组件**: View Binding, Navigation Component, Custom Components (MathKeyboardView)
-- **数学解析**: mXparser, EJML
-- **图形渲染**: OpenGL ES, Custom Views, Canvas Drawing
-
-## 🚀 开发与运行
-1. **环境**: Android Studio Ladybug (或更高版本)。
-2. **构建**: 使用 Gradle 8.0+ 和 Kotlin 1.9+。
-3. **测试**: 项目包含完整的 JUnit 单元测试，覆盖了所有核心数学逻辑和绘图引擎。
-
+## 🚀 运行指南
 ```bash
-# 运行单元测试
+# 运行全部模块的单元测试
 ./gradlew test
+
+# 构建 APK
+./gradlew :app:assembleDebug
 ```
+
+---
+*本项目已根据工业级规范进行重构，代码遵循严谨的空安全规范，适合作为高级 Android 开发的参考范例。*

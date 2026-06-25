@@ -20,4 +20,8 @@
         android:id="@+id/ComplexFragment"
         android:icon="@android:drawable/ic_menu_edit"
         android:title="@string/title_complex" />
+    <item
+        android:id="@+id/UnitFragment"
+        android:icon="@android:drawable/ic_menu_share"
+        android:title="@string/title_unit" />
 </menu>
