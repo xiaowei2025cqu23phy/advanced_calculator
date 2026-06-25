@@ -71,6 +71,11 @@ class ScientificFragment : Fragment() {
         viewModel.isLoading.observe(viewLifecycleOwner) { loading ->
             if (loading) binding.tvResult.text = "计算中..."
         }
+
+        viewModel.degreeMode.observe(viewLifecycleOwner) { isDeg ->
+            degreeMode = isDeg
+            updateDegDisplay()
+        }
     }
 
     private fun setupInput() {
@@ -94,8 +99,7 @@ class ScientificFragment : Fragment() {
         updateDegDisplay()
         
         binding.btnDeg.setOnClickListener {
-            degreeMode = !degreeMode
-            updateDegDisplay()
+            viewModel.toggleDegreeMode()
         }
         
         binding.btnAns.setOnClickListener {
@@ -129,20 +133,20 @@ class ScientificFragment : Fragment() {
     }
 
     private fun setupKeyboard(view: View) {
-        val kbc = view.findViewById<ViewGroup>(R.id.kb_container) ?: return
-        val kbv = layoutInflater.inflate(R.layout.layout_math_keyboard, kbc, true)
-        
-        MathKeyboardHelper(kbv) { text -> 
-            binding.etExpression.append(text)
-        }.apply {
-            equalsButton?.setOnClickListener { calculate() }
-            backspaceButton?.setOnClickListener {
+        binding.kbView.apply {
+            onInput = { text ->
+                binding.etExpression.append(text)
+            }
+            onBackspace = {
                 val t = binding.etExpression.text.toString()
                 if (t.isNotEmpty()) binding.etExpression.setText(t.dropLast(1))
             }
-            acButton?.setOnClickListener {
+            onClear = {
                 binding.etExpression.setText("")
                 binding.tvResult.text = ""
+            }
+            onEquals = {
+                calculate()
             }
         }
     }

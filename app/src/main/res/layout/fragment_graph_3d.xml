@@ -150,8 +150,8 @@
         android:layout_weight="1" />
 
     <!-- Keyboard container -->
-    <FrameLayout
-        android:id="@+id/kb_container"
+    <com.example.myapplication.MathKeyboardView
+        android:id="@+id/kb_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

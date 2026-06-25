@@ -1,6 +1,6 @@
-package com.example.myapplication.model;
+package com.example.myapplication.model
 
-public enum ErrorType {
+enum class ErrorType {
     DIVISION_BY_ZERO,
     SINGULAR_MATRIX,
     INVALID_EXPRESSION,

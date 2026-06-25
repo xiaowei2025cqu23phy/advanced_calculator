@@ -9,12 +9,14 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.model.MathResult
 import com.example.myapplication.repository.CalculationRepository
 import com.example.myapplication.repository.HistoryRepository
+import com.example.myapplication.repository.SettingsManager
 import kotlinx.coroutines.launch
 
 class ScientificViewModel(application: Application) : AndroidViewModel(application) {
 
     private val calcRepo = CalculationRepository()
     private val historyRepo = HistoryRepository(application)
+    private val settings = SettingsManager(application)
 
     private val _result = MutableLiveData<MathResult<Double>>()
     val result: LiveData<MathResult<Double>> = _result
@@ -24,6 +26,9 @@ class ScientificViewModel(application: Application) : AndroidViewModel(applicati
 
     private val _errorMessage = MutableLiveData<String?>(null)
     val errorMessage: LiveData<String?> = _errorMessage
+
+    private val _degreeMode = MutableLiveData(settings.degreeMode)
+    val degreeMode: LiveData<Boolean> = _degreeMode
 
     // Observe Room history as LiveData via Flow
     val history = historyRepo.getAllFlow().asLiveData()
@@ -44,6 +49,12 @@ class ScientificViewModel(application: Application) : AndroidViewModel(applicati
             }
             _isLoading.value = false
         }
+    }
+
+    fun toggleDegreeMode() {
+        val newVal = !(_degreeMode.value ?: false)
+        _degreeMode.value = newVal
+        settings.degreeMode = newVal
     }
 
     fun clearHistory() {

@@ -1,32 +1,27 @@
 package com.example.myapplication
 
+import android.content.Context
+import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 
-/**
- * Functional interface for input callbacks, better for Java interop.
- */
-fun interface OnInputListener {
-    fun onInput(text: String)
-}
+class MathKeyboardView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : LinearLayout(context, attrs, defStyleAttr) {
 
-/**
- * Modernized Kotlin MathKeyboardHelper with haptic feedback.
- */
-class MathKeyboardHelper(
-    private val root: View,
-    private val onInput: OnInputListener
-) {
+    var onInput: ((String) -> Unit)? = null
+    var onBackspace: (() -> Unit)? = null
+    var onClear: (() -> Unit)? = null
+    var onEquals: (() -> Unit)? = null
+
     private var expanded = true
     private val funcBtns = arrayOfNulls<Button>(10)
     private val tabBtns = arrayOfNulls<Button>(4)
-    private val toggleBtn: Button? = root.findViewById(R.id.kb_toggle)
-    private val funcPanel: View? = root.findViewById(R.id.kb_func_panel)
-
-    val backspaceButton: Button? get() = root.findViewById(R.id.kb_backspace)
-    val acButton: Button? get() = root.findViewById(R.id.kb_ac)
-    val equalsButton: Button? get() = root.findViewById(R.id.kb_equals)
+    private val toggleBtn: Button
+    private val funcPanel: View
 
     companion object {
         private val FUNCS = arrayOf(
@@ -58,18 +53,25 @@ class MathKeyboardHelper(
     }
 
     init {
+        orientation = VERTICAL
+        LayoutInflater.from(context).inflate(R.layout.layout_math_keyboard, this, true)
+
+        toggleBtn = findViewById(R.id.kb_toggle)
+        funcPanel = findViewById(R.id.kb_func_panel)
+
         (1..10).forEach { i ->
-            val id = root.resources.getIdentifier("kb_fn_$i", "id", root.context.packageName)
-            funcBtns[i - 1] = root.findViewById(id)
+            val id = resources.getIdentifier("kb_fn_$i", "id", context.packageName)
+            funcBtns[i - 1] = findViewById(id)
         }
         (1..4).forEach { i ->
-            val id = root.resources.getIdentifier("kb_tab_$i", "id", root.context.packageName)
-            tabBtns[i - 1] = root.findViewById(id)
+            val id = resources.getIdentifier("kb_tab_$i", "id", context.packageName)
+            tabBtns[i - 1] = findViewById(id)
         }
 
         wireTabs()
         wireToggle()
         wireNumbers()
+        wireSpecial()
         applyTab(0)
     }
 
@@ -92,7 +94,7 @@ class MathKeyboardHelper(
                 val insert = funcs[i].second
                 button.setOnClickListener {
                     it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                    onInput.onInput(insert)
+                    onInput?.invoke(insert)
                 }
             } else {
                 button.visibility = View.GONE
@@ -104,9 +106,9 @@ class MathKeyboardHelper(
     }
 
     private fun wireToggle() {
-        toggleBtn?.setOnClickListener {
+        toggleBtn.setOnClickListener {
             expanded = !expanded
-            funcPanel?.visibility = if (expanded) View.VISIBLE else View.GONE
+            funcPanel.visibility = if (expanded) View.VISIBLE else View.GONE
             toggleBtn.text = if (expanded) "▲" else "▼"
         }
     }
@@ -121,10 +123,25 @@ class MathKeyboardHelper(
             R.id.kb_lparen to "(", R.id.kb_rparen to ")",
             R.id.kb_add to "+"
         ).forEach { (id, text) ->
-            root.findViewById<Button>(id)?.setOnClickListener {
+            findViewById<Button>(id)?.setOnClickListener {
                 it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
-                onInput.onInput(text)
+                onInput?.invoke(text)
             }
+        }
+    }
+
+    private fun wireSpecial() {
+        findViewById<Button>(R.id.kb_backspace)?.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            onBackspace?.invoke()
+        }
+        findViewById<Button>(R.id.kb_ac)?.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            onClear?.invoke()
+        }
+        findViewById<Button>(R.id.kb_equals)?.setOnClickListener {
+            it.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+            onEquals?.invoke()
         }
     }
 }

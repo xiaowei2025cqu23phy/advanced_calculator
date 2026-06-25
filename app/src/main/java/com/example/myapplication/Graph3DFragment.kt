@@ -103,14 +103,14 @@ class Graph3DFragment : Fragment() {
     }
 
     private fun setupKeyboard(view: View) {
-        val kbView = layoutInflater.inflate(R.layout.layout_math_keyboard, binding.kbContainer, true)
-        MathKeyboardHelper(kbView) { appendToInput(it) }.apply {
-            backspaceButton?.setOnClickListener {
+        binding.kbView.apply {
+            onInput = { appendToInput(it) }
+            onBackspace = {
                 val t = getActiveInputText()
                 if (t.isNotEmpty()) setActiveInputText(t.dropLast(1))
             }
-            acButton?.setOnClickListener { setActiveInputText("") }
-            equalsButton?.setOnClickListener { plotFunction() }
+            onClear = { setActiveInputText("") }
+            onEquals = { plotFunction() }
         }
     }
 
