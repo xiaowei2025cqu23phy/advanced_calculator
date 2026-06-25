@@ -50,7 +50,7 @@ class ComplexFragment : Fragment() {
                     if (it.isSuccess) {
                         binding.tvComplexResult.text = it.data
                     } else {
-                        binding.tvComplexResult.text = it.error.userMessage
+                        binding.tvComplexResult.text = it.error?.userMessage ?: "未知错误"
                     }
                 }
             }

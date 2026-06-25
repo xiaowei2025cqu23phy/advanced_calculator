@@ -38,7 +38,7 @@ class MatrixFragment : Fragment() {
                 if (it.isSuccess) {
                     binding.tvMatrixResult.text = it.data
                 } else {
-                    binding.tvMatrixResult.text = it.error.userMessage
+                    binding.tvMatrixResult.text = it.error?.userMessage ?: "未知错误"
                 }
             }
         }
